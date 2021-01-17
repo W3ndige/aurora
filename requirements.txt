@@ -4,3 +4,4 @@ sqlalchemy==1.3.20
 psycopg2-binary==2.8.6
 ssdeep==3.4
 python-magic==0.4.18
+karton-core==4.1.0
