@@ -6,6 +6,8 @@ producer = Producer(config)
 
 
 def push_file(file: UploadFile, sha256: str) -> None:
+    file.file.seek(0, 0)
+
     filename = file.filename
     content = file.file.read()
 

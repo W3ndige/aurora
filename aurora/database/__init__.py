@@ -20,7 +20,7 @@ db_session: Session = sessionmaker(
 Base = declarative_base(name='Base')
 
 from .models import Sample      # noqa E402,E401
-#from .models import Feature     # noqa E402,E401
+from .models import Feature     # noqa E402,E401
 #from .models import ssDeep      # noqa E402,E401
 
 recreate_db(Base, engine)

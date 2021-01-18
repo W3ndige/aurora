@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import UploadFile
+from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String
 
 from aurora.core import utils
@@ -18,6 +19,8 @@ class Sample(Base):
     sha1 = Column(String(40), nullable=False, index=True, unique=True)
     sha256 = Column(String(64), nullable=False, index=True, unique=True)
     sha512 = Column(String(128), nullable=False, index=True, unique=True)
+
+    features = relationship("Feature")
 
     @staticmethod
     def from_uploadfile(file: UploadFile) -> Sample:
