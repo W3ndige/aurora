@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String
 
 from aurora.core import utils
 from aurora.database import Base
+from aurora.database.models.string import sample_string_association
 
 
 class Sample(Base):
@@ -20,7 +21,11 @@ class Sample(Base):
     sha256 = Column(String(64), nullable=False, index=True, unique=True)
     sha512 = Column(String(128), nullable=False, index=True, unique=True)
 
-    features = relationship("Feature")
+    strings = relationship(
+        "String",
+        secondary=sample_string_association,
+        back_populates="samples"
+    )
 
     @staticmethod
     def from_uploadfile(file: UploadFile) -> Sample:

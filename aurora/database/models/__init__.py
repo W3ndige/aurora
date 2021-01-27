@@ -1,7 +1,7 @@
 from aurora.database.models.sample import Sample
-from aurora.database.models.feature import Feature
+from aurora.database.models.string import String
 
 __all__ = [
     "Sample",
-    "Feature"
+    "String"
 ]

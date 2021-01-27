@@ -1,13 +1,4 @@
 from pydantic import BaseModel
-from typing import List
-
-
-class BaseFeature(BaseModel):
-    data: List
-    type: str
-
-    class Config:
-        orm_mode = True
 
 
 class BaseSample(BaseModel):
@@ -23,17 +14,10 @@ class BaseSample(BaseModel):
         orm_mode = True
 
 
-class Sample(BaseSample):
-    features = List[BaseFeature]
+class BaseString(BaseModel):
+    type: str
+    value: str
+    status: str
 
     class Config:
-        arbitrary_types_allowed = True
-
-
-class SampleFeature(BaseModel):
-    feature: BaseFeature
-    sha256: str
-
-    class Config:
-        arbitrary_types_allowed = True
         orm_mode = True
