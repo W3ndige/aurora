@@ -15,7 +15,7 @@ def get_samples(db=Depends(get_db)):
     return queries.get_samples(db)
 
 
-@router.post("/", response_model=schemas.BaseSample)
+@router.post("/", response_model=schemas.Sample)
 def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
     sample = queries.add_sample(db, file)
 
@@ -27,14 +27,14 @@ def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
     return sample
 
 
-@router.get("/{sha256}", response_model=schemas.BaseSample)
+@router.get("/{sha256}", response_model=schemas.Sample)
 def get_sample(sha256: str, db=Depends(get_db)):
     sample = queries.get_sample(db, sha256)
 
     return sample
 
 
-@router.post("/{sha256}/string", response_model=schemas.BaseString)
+@router.post("/{sha256}/string", response_model=schemas.String)
 def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     string = queries.add_sample_string(
         db,
@@ -46,7 +46,7 @@ def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     return string
 
 
-@router.get("/{sha256}/strings", response_model=List[schemas.BaseString])
+@router.get("/{sha256}/strings", response_model=List[schemas.String])
 def get_strings(sha256: str, db=Depends(get_db)):
     strings = queries.get_sample_strings(db, sha256)
 
