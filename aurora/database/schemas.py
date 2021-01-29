@@ -14,8 +14,13 @@ class BaseSample(BaseModel):
         orm_mode = True
 
 
+class InputString(BaseModel):
+    encoding: str
+    value: str
+
+
 class BaseString(BaseModel):
-    type: str
+    encoding: str
     value: str
     status: str
 

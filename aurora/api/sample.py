@@ -12,7 +12,7 @@ router = APIRouter(
 
 @router.get("/")
 def get_samples(db=Depends(get_db)):
-    return
+    return queries.get_samples(db)
 
 
 @router.post("/", response_model=schemas.BaseSample)
@@ -35,8 +35,13 @@ def get_sample(sha256: str, db=Depends(get_db)):
 
 
 @router.post("/{sha256}/string", response_model=schemas.BaseString)
-def add_string(sha256: str, string: schemas.BaseString, db=Depends(get_db)):
-    string = queries.add_sample_string(db, sha256, string)
+def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
+    string = queries.add_sample_string(
+        db,
+        sha256,
+        string.encoding,
+        string.value
+    )
 
     return string
 
