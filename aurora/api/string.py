@@ -11,12 +11,12 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.String])
 def get_strings(db=Depends(get_db)):
-    return queries.get_strings(db)
+    return queries.string.get_strings(db)
 
 
 @router.post("/", response_model=schemas.String)
 def add_string(string: schemas.InputString, db=Depends(get_db)):
-    string = queries.add_string(
+    string = queries.string.add_string(
         db,
         string.encoding,
         string.value
