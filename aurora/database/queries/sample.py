@@ -10,10 +10,23 @@ def get_samples(db: Session) -> List[models.Sample]:
     return db.query(models.Sample).all()
 
 
+def get_number_of_samples(db: Session) -> int:
+    return db.query(models.Sample).count()
+
+
 def get_sample_by_sha256(db: Session, sha256: str) -> models.Sample:
     return db.query(models.Sample)\
         .filter(models.Sample.sha256 == sha256)\
         .first()
+
+
+def get_sample_strings(db: Session, sha256: str) -> Optional[List]:
+    sample = get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        return None
+
+    return sample.strings
 
 
 def add_sample(db: Session, file: UploadFile) -> models.Sample:
@@ -28,12 +41,3 @@ def add_sample(db: Session, file: UploadFile) -> models.Sample:
         db.refresh(sample)
 
     return sample
-
-
-def get_sample_strings(db: Session, sha256: str) -> Optional[List]:
-    sample = get_sample_by_sha256(db, sha256)
-
-    if not sample:
-        return None
-
-    return sample.strings

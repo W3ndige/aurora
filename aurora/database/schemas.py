@@ -1,9 +1,9 @@
 from typing import Optional
 from pydantic import BaseModel
-from pydantic.typing import Literal
 
 
 class Sample(BaseModel):
+    id: int
     filename: str
     filesize: int
     filetype: str
@@ -17,15 +17,14 @@ class Sample(BaseModel):
 
 
 class InputString(BaseModel):
-    encoding: Literal["ASCII", "WIDE"]
     value: str
     sha256: Optional[str]
 
 
 class String(BaseModel):
-    encoding: str
+    id: int
     value: str
-    status: str
+    type: str
     sha256: str
 
     class Config:
