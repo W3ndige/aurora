@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import sqlalchemy as sql
 
+from typing import Optional
 from sqlalchemy.orm import relationship
 
 from aurora.database import Base
@@ -21,6 +22,7 @@ class String(Base):
     id = sql.Column(sql.Integer, primary_key=True)
     value = sql.Column(sql.String, nullable=False)
     sha256 = sql.Column(sql.String(128), nullable=False, unique=True)
+    trait = sql.Column(sql.String)
     type = sql.Column(sql.String, nullable=False)
 
     samples = relationship(
@@ -28,7 +30,7 @@ class String(Base):
     )
 
     def __init__(
-        self, value: str, type: str, sha256: str = None
+        self, value: str, type: str, trait: Optional[str], sha256: str = None
     ) -> String:
 
         if not sha256:
@@ -36,4 +38,5 @@ class String(Base):
 
         self.value = value
         self.sha256 = sha256
+        self.trait = trait
         self.type = type

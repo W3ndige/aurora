@@ -60,13 +60,15 @@ def add_string_to_sample(
     db.commit()
 
 
-def add_string(db: Session, value: str) -> models.String:
+def add_string(
+    db: Session, value: str, trait: Optional[str] = None
+) -> models.String:
     sha256 = hashlib.sha256(value.encode("utf-8")).hexdigest()
     string = get_string_by_sha256(db, sha256)
 
     if not string:
         string = models.String(
-            value=value, type="Uncategorized", sha256=sha256
+            value=value, type="Uncategorized", trait=trait, sha256=sha256
         )
 
         db.add(string)

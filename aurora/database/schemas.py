@@ -24,6 +24,7 @@ class InputString(BaseModel):
 class String(BaseModel):
     id: int
     value: str
+    trait: Optional[str]
     type: str
     sha256: str
 
