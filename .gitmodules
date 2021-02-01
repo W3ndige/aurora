@@ -1,3 +1,6 @@
 [submodule "karton"]
 	path = kartons
 	url = git@github.com:W3ndige/aurora-karton.git
+[submodule "preanalyzed"]
+	path = preanalyzed
+	url = git@github.com:W3ndige/aurora-preanalyzed.git
