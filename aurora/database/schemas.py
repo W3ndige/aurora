@@ -18,6 +18,7 @@ class Sample(BaseModel):
 
 class InputString(BaseModel):
     value: str
+    trait: Optional[str]
     sha256: Optional[str]
 
 

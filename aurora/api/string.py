@@ -16,7 +16,7 @@ def get_strings(db=Depends(get_db)):
 
 @router.post("/", response_model=schemas.String)
 def add_string(string: schemas.InputString, db=Depends(get_db)):
-    string = queries.string.add_string(db, string.value)
+    string = queries.string.add_string(db, string.value, string.trait)
 
     return string
 

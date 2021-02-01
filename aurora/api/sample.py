@@ -37,7 +37,9 @@ def get_sample(sha256: str, db=Depends(get_db)):
 @router.post("/{sha256}/string", response_model=schemas.String)
 def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-    submitted_string = queries.string.add_string(db, string.value)
+    submitted_string = queries.string.add_string(
+        db, string.value, string.trait
+    )
 
     queries.string.add_string_to_sample(
         db,
