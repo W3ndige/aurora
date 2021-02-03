@@ -31,3 +31,8 @@ class String(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class InputRelation(BaseModel):
+    parent_sha256: str
+    child_sha256: str

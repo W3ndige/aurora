@@ -29,6 +29,14 @@ def get_sample_strings(db: Session, sha256: str) -> Optional[List]:
     return sample.strings
 
 
+def get_sample_parents(db: Session, sample: models.Sample) -> List[models.Sample]:
+    return list(sample.parents)
+
+
+def get_sample_children(db: Session, sample: models.Sample) -> List[models.Sample]:
+    return list(sample.children)
+
+
 def add_sample(db: Session, file: UploadFile) -> models.Sample:
     sha256 = get_sha256(file.file)
     sample = get_sample_by_sha256(db, sha256)

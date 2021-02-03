@@ -3,9 +3,11 @@ from __future__ import annotations
 from fastapi import UploadFile
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from aurora.core import utils
 from aurora.database import Base
+from aurora.database.models.relation import Relation
 from aurora.database.models.string import sample_string_association
 
 
@@ -22,9 +24,19 @@ class Sample(Base):
     sha512 = Column(String(128), nullable=False, index=True, unique=True)
 
     strings = relationship(
-        "String",
-        secondary=sample_string_association,
-        back_populates="samples"
+        "String", secondary=sample_string_association, back_populates="samples"
+    )
+
+    parents = association_proxy(
+        "parent_samples",
+        "parent",
+        creator=lambda samples: Relation(parent=samples[0], child=samples[1])
+    )
+
+    children = association_proxy(
+        "children_samples",
+        "child",
+        creator=lambda samples: Relation(parent=samples[0], child=samples[1])
     )
 
     @staticmethod
@@ -50,3 +62,6 @@ class Sample(Base):
         )
 
         return sample
+
+    def add_child_sample(self, sample: Sample) -> None:
+        self.children.append((self, sample))

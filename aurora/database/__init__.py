@@ -19,6 +19,7 @@ db_session: Session = sessionmaker(
 
 Base = declarative_base(name='Base')
 
+from .models import Relation    # noqa E402, E401
 from .models import Sample      # noqa E402,E401
 from .models import String      # noqa E402,E401
 

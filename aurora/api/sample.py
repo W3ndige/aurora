@@ -55,3 +55,23 @@ def get_strings(sha256: str, db=Depends(get_db)):
     strings = queries.string.get_sample_strings(db, sha256)
 
     return strings
+
+
+@router.get("/{sha256}/parents", response_model=List[schemas.Sample])
+def get_parents(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        return None
+
+    return queries.sample.get_sample_parents(db, sample)
+
+
+@router.get("/{sha256}/children", response_model=List[schemas.Sample])
+def get_children(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        return None
+
+    return queries.sample.get_sample_children(db, sample)
