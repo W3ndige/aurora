@@ -30,13 +30,13 @@ class Sample(Base):
     parents = association_proxy(
         "parent_samples",
         "parent",
-        creator=lambda samples: Relation(parent=samples[0], child=samples[1])
+        creator=lambda samples: Relation(parent=samples[0], child=samples[1], type=samples[2])
     )
 
     children = association_proxy(
         "children_samples",
         "child",
-        creator=lambda samples: Relation(parent=samples[0], child=samples[1])
+        creator=lambda samples: Relation(parent=samples[0], child=samples[1], type=samples[2])
     )
 
     @staticmethod
@@ -63,5 +63,5 @@ class Sample(Base):
 
         return sample
 
-    def add_child_sample(self, sample: Sample) -> None:
-        self.children.append((self, sample))
+    def add_child_sample(self, sample: Sample, relation_type: str) -> None:
+        self.children.append((self, sample, type))

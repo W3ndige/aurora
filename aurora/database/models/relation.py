@@ -12,9 +12,9 @@ class Relation(Base):
     id = sql.Column(sql.Integer, primary_key=True)
     parent_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False)
     child_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False)
-    type = sql.Column(sql.String)
-    strength = sql.Column(sql.Integer)
-    occurance_count = sql.Column(sql.Integer)
+    type = sql.Column(sql.String, nullable=False)
+    strength = sql.Column(sql.Integer, nullable=False, default=0)
+    occurance_count = sql.Column(sql.Integer, nullable=False, default=0)
     trait = sql.Column(sql.String)
 
     parent = relationship(

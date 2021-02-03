@@ -36,3 +36,14 @@ class String(BaseModel):
 class InputRelation(BaseModel):
     parent_sha256: str
     child_sha256: str
+    type: str
+
+
+class Relation(BaseModel):
+    id: int
+    parent_id: int
+    child_id: int
+    type: str
+    strength: int
+    occurance_count: int
+    trait: Optional[str]
