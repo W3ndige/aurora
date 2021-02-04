@@ -64,4 +64,4 @@ class Sample(Base):
         return sample
 
     def add_child_sample(self, sample: Sample, relation_type: str) -> None:
-        self.children.append((self, sample, type))
+        self.children.append((self, sample, relation_type))

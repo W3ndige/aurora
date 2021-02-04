@@ -19,17 +19,18 @@ def get_relation(
 
 
 def add_relation(
-    db: Session, parent: models.Sample, child: models.Sample, type: str
+    db: Session, parent: models.Sample, child: models.Sample, rel_type: str
 ) -> models.Relation:
 
-    relation = get_relation(db, parent, child, type)
+    relation = get_relation(db, parent, child, rel_type)
     if relation:
         update_occurance_count(db, relation)
         return relation
 
-    parent.add_child_sample(child, type)
+    parent.add_child_sample(child, rel_type)
+    db.commit()
 
-    relation = get_relation(db, parent, child, type)
+    relation = get_relation(db, parent, child, rel_type)
 
     return relation
 
