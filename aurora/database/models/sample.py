@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import List
 from fastapi import UploadFile
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String
@@ -9,7 +8,6 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from aurora.core import utils
 from aurora.database import Base
 from aurora.database.models.relation import Relation
-from aurora.database.models.string import sample_string_association
 
 
 class Sample(Base):
@@ -23,10 +21,6 @@ class Sample(Base):
     sha1 = Column(String(40), nullable=False, index=True, unique=True)
     sha256 = Column(String(64), nullable=False, index=True, unique=True)
     sha512 = Column(String(128), nullable=False, index=True, unique=True)
-
-    strings = relationship(
-        "String", secondary=sample_string_association, back_populates="samples"
-    )
 
     minhashes = relationship("Minhash")
 

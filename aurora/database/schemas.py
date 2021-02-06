@@ -1,5 +1,5 @@
-from typing import Optional
 from pydantic import BaseModel
+from typing import List, Optional
 
 
 class Sample(BaseModel):
@@ -11,6 +11,23 @@ class Sample(BaseModel):
     sha1: str
     sha256: str
     sha512: str
+
+    class Config:
+        orm_mode = True
+
+
+class InputMinhash(BaseModel):
+    seed: int
+    hash_values: List[int]
+    minhash_type: str
+
+
+class Minhash(BaseModel):
+    id: int
+    sample_id: int
+    seed: int
+    hash_values: List[int]
+    minhash_type: str
 
     class Config:
         orm_mode = True

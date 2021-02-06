@@ -34,6 +34,26 @@ def get_sample(sha256: str, db=Depends(get_db)):
     return sample
 
 
+@router.post("/{sha256}/minhash", response_model=schemas.Minhash)
+def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if sample and sample.minhashes:
+        if any(x.minhash_type == minhash.minhash_type for x in sample.minhashes):
+            return None
+
+    new_minhash = queries.minhash.add_minhash(
+        db, minhash.seed, minhash.hash_values, minhash.minhash_type
+    )
+    queries.sample.add_minhash_to_sample(db, sample, new_minhash)
+    return new_minhash
+
+
+@router.get("/{sha256}/minhash", response_model=List[schemas.Minhash])
+def get_minhashes(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    return sample.minhashes
+
+
 @router.get("/{sha256}/parents", response_model=List[schemas.Sample])
 def get_parents(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)

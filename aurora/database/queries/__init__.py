@@ -1,9 +1,9 @@
 from aurora.database.queries import sample
-from aurora.database.queries import string
+from aurora.database.queries import minhash
 from aurora.database.queries import relation
 
 __all__ = [
     "sample",
-    "string",
+    "minhash",
     "relation"
 ]
