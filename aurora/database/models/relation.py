@@ -17,6 +17,8 @@ class Relation(Base):
     occurance_count = sql.Column(sql.Integer, nullable=False, default=0)
     trait = sql.Column(sql.String)
 
+    sql.UniqueConstraint(parent_id, child_id, type, name="unique_parent_child_of_type")
+
     parent = relationship(
         "Sample",
         foreign_keys=[parent_id],

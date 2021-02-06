@@ -16,23 +16,6 @@ class Sample(BaseModel):
         orm_mode = True
 
 
-class InputString(BaseModel):
-    value: str
-    trait: Optional[str]
-    sha256: Optional[str]
-
-
-class String(BaseModel):
-    id: int
-    value: str
-    trait: Optional[str]
-    type: str
-    sha256: str
-
-    class Config:
-        orm_mode = True
-
-
 class InputRelation(BaseModel):
     parent_sha256: str
     child_sha256: str

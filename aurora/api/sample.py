@@ -34,29 +34,6 @@ def get_sample(sha256: str, db=Depends(get_db)):
     return sample
 
 
-@router.post("/{sha256}/string", response_model=schemas.String)
-def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
-    sample = queries.sample.get_sample_by_sha256(db, sha256)
-    submitted_string = queries.string.add_string(
-        db, string.value, string.trait
-    )
-
-    queries.string.add_string_to_sample(
-        db,
-        sample,
-        submitted_string
-    )
-
-    return submitted_string
-
-
-@router.get("/{sha256}/strings", response_model=List[schemas.String])
-def get_strings(sha256: str, db=Depends(get_db)):
-    strings = queries.string.get_sample_strings(db, sha256)
-
-    return strings
-
-
 @router.get("/{sha256}/parents", response_model=List[schemas.Sample])
 def get_parents(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)

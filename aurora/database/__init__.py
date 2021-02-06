@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
+from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -19,9 +20,16 @@ db_session: Session = sessionmaker(
 
 Base = declarative_base(name='Base')
 
+# Useful ENUMs
+
+ANALYSIS_TYPE = ENUM(
+    "STRINGS", "YARA"
+)
+
 from .models import Relation    # noqa E402, E401
-from .models import Sample      # noqa E402,E401
-from .models import String      # noqa E402,E401
+from .models import Sample      # noqa E402, E401
+from .models import String      # noqa E402, E401
+from .models import Minhash     # noqa E402, E401
 
 recreate_db(Base, engine)
 
@@ -36,5 +44,6 @@ def get_db():
 
 __all__ = [
     "db_session",
-    "Base"
+    "Base",
+    "ANALYSIS_TYPE"
 ]

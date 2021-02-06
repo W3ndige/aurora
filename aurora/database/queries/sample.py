@@ -1,5 +1,5 @@
 from fastapi import UploadFile
-from typing import List, Optional
+from typing import List
 from sqlalchemy.orm import Session
 
 from aurora.database import models
@@ -18,15 +18,6 @@ def get_sample_by_sha256(db: Session, sha256: str) -> models.Sample:
     return db.query(models.Sample)\
         .filter(models.Sample.sha256 == sha256)\
         .first()
-
-
-def get_sample_strings(db: Session, sha256: str) -> Optional[List]:
-    sample = get_sample_by_sha256(db, sha256)
-
-    if not sample:
-        return None
-
-    return sample.strings
 
 
 def get_sample_parents(db: Session, sample: models.Sample) -> List[models.Sample]:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import List
 from fastapi import UploadFile
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String
@@ -26,6 +27,8 @@ class Sample(Base):
     strings = relationship(
         "String", secondary=sample_string_association, back_populates="samples"
     )
+
+    minhashes = relationship("Minhash")
 
     parents = association_proxy(
         "parent_samples",
@@ -64,4 +67,7 @@ class Sample(Base):
         return sample
 
     def add_child_sample(self, sample: Sample, relation_type: str) -> None:
+        if sample is self:
+            return
+
         self.children.append((self, sample, relation_type))
