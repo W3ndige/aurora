@@ -28,9 +28,11 @@ class Minhash(BaseModel):
     seed: int
     hash_values: List[int]
     minhash_type: str
+    sample: Sample
 
     class Config:
         orm_mode = True
+        arbitrary_types_allowed = True
 
 
 class InputRelation(BaseModel):

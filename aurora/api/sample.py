@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, UploadFile, File, Depends
 
 from aurora.core import karton
@@ -45,11 +45,17 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
         db, minhash.seed, minhash.hash_values, minhash.minhash_type
     )
     queries.sample.add_minhash_to_sample(db, sample, new_minhash)
+
+    try:
+        karton.push_minhash(sha256, minhash.seed, minhash.hash_values, minhash.minhash_type)
+    except RuntimeError:
+        pass
+
     return new_minhash
 
 
 @router.get("/{sha256}/minhash", response_model=List[schemas.Minhash])
-def get_minhashes(sha256: str, db=Depends(get_db)):
+def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     return sample.minhashes
 

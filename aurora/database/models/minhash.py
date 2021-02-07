@@ -14,7 +14,7 @@ class Minhash(Base):
     id = sql.Column(sql.Integer, primary_key=True)
     sample_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"))
     seed = sql.Column(sql.Integer, nullable=False)
-    hash_values = sql.Column(sql.ARRAY(sql.Integer()), nullable=False)
+    hash_values = sql.Column(sql.ARRAY(sql.BIGINT()), nullable=False)
     minhash_type = sql.Column(ANALYSIS_TYPE, nullable=False, index=True)
 
     sql.UniqueConstraint("sample_id", "analysis_type", name="unique_analysis_sample")
