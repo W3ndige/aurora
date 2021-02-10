@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+from typing import List
 from fastapi import UploadFile
-from sqlalchemy.orm import relationship
+from collections import namedtuple
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
 
 from aurora.core import utils
 from aurora.database import Base
 from aurora.database.models.relation import Relation
+
+RelationInput = namedtuple("RelationInput", ["parent", "child", "type", "confidence"])
 
 
 class Sample(Base):
@@ -24,17 +28,31 @@ class Sample(Base):
 
     minhashes = relationship("Minhash")
 
-    parents = association_proxy(
-        "parent_samples",
-        "parent",
-        creator=lambda samples: Relation(parent=samples[0], child=samples[1], type=samples[2])
+    children = association_proxy(
+        "related_children",
+        "child",
+        creator=lambda relation_input: Relation(
+            parent=relation_input.parent,
+            child=relation_input.child,
+            relation_type=relation_input.type,
+            confidence=relation_input.confidence
+        )
     )
 
-    children = association_proxy(
-        "children_samples",
-        "child",
-        creator=lambda samples: Relation(parent=samples[0], child=samples[1], type=samples[2])
+    parents = association_proxy(
+        "related_parents",
+        "parent",
+        creator=lambda relation_input: Relation(
+            parent=relation_input.parent,
+            child=relation_input.child,
+            relation_type=relation_input.type,
+            confidence=relation_input.confidence
+        )
     )
+
+    @property
+    def related(self) -> List[Sample]:
+        return self.parents + self.children
 
     @staticmethod
     def from_uploadfile(file: UploadFile) -> Sample:
@@ -60,8 +78,7 @@ class Sample(Base):
 
         return sample
 
-    def add_child_sample(self, sample: Sample, relation_type: str) -> None:
-        if sample is self:
-            return
+    def add_child(self, child: Sample, analysis_type: str, confidence: str) -> None:
+        relation_input = RelationInput(parent=self, child=child, type=analysis_type, confidence=confidence)
 
-        self.children.append((self, sample, relation_type))
+        self.children.append(relation_input)
