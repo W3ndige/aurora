@@ -15,9 +15,7 @@ def get_number_of_samples(db: Session) -> int:
 
 
 def get_sample_by_sha256(db: Session, sha256: str) -> models.Sample:
-    return db.query(models.Sample)\
-        .filter(models.Sample.sha256 == sha256)\
-        .first()
+    return db.query(models.Sample).filter(models.Sample.sha256 == sha256).first()
 
 
 def add_sample(db: Session, file: UploadFile) -> models.Sample:

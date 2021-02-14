@@ -52,7 +52,9 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
     db.commit()
 
     try:
-        karton.push_minhash(sha256, minhash.seed, minhash.hash_values, minhash.minhash_type)
+        karton.push_minhash(
+            sha256, minhash.seed, minhash.hash_values, minhash.minhash_type
+        )
     except RuntimeError:
         pass
 

@@ -15,5 +15,9 @@ class Relation(Base):
     relation_type = sql.Column(ANALYSIS_TYPE, nullable=False)
     confidence = sql.Column(sql.String, nullable=False)
 
-    parent = relationship("Sample", foreign_keys=[parent_id], backref=backref("related_children"))
-    child = relationship("Sample", foreign_keys=[child_id], backref=backref("related_parents"))
+    parent = relationship(
+        "Sample", foreign_keys=[parent_id], backref=backref("related_children")
+    )
+    child = relationship(
+        "Sample", foreign_keys=[child_id], backref=backref("related_parents")
+    )

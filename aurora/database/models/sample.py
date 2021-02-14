@@ -35,8 +35,8 @@ class Sample(Base):
             parent=relation_input.parent,
             child=relation_input.child,
             relation_type=relation_input.type,
-            confidence=relation_input.confidence
-        )
+            confidence=relation_input.confidence,
+        ),
     )
 
     parents = association_proxy(
@@ -46,8 +46,8 @@ class Sample(Base):
             parent=relation_input.parent,
             child=relation_input.child,
             relation_type=relation_input.type,
-            confidence=relation_input.confidence
-        )
+            confidence=relation_input.confidence,
+        ),
     )
 
     @property
@@ -79,6 +79,8 @@ class Sample(Base):
         return sample
 
     def add_child(self, child: Sample, analysis_type: str, confidence: str) -> None:
-        relation_input = RelationInput(parent=self, child=child, type=analysis_type, confidence=confidence)
+        relation_input = RelationInput(
+            parent=self, child=child, type=analysis_type, confidence=confidence
+        )
 
         self.children.append(relation_input)

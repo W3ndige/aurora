@@ -25,7 +25,11 @@ class Minhash(Base):
         if self.minhash_type != other.minhash_type:
             return 0.0
 
-        self_minhash = datasketch.LeanMinHash(seed=self.seed, hashvalues=self.hash_values)
-        other_minhash = datasketch.LeanMinHash(seed=other.seed, hashvalues=other.hash_values)
+        self_minhash = datasketch.LeanMinHash(
+            seed=self.seed, hashvalues=self.hash_values
+        )
+        other_minhash = datasketch.LeanMinHash(
+            seed=other.seed, hashvalues=other.hash_values
+        )
 
         return self_minhash.jaccard(other_minhash)
