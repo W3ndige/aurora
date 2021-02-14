@@ -45,5 +45,8 @@ class Relation(BaseModel):
     id: int
     parent_id: int
     child_id: int
-    type: str
+    relation_type: str
     confidence: str
+
+    class Config:
+        orm_mode = True
