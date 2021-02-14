@@ -16,7 +16,5 @@ def add_minhash(db: Session, seed: int, hash_values: List[int], minhash_type: st
     )
 
     db.add(minhash_model)
-    db.commit()
-    db.refresh(minhash_model)
 
     return minhash_model

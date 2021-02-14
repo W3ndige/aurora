@@ -18,6 +18,7 @@ def get_samples(db=Depends(get_db)):
 @router.post("/", response_model=schemas.Sample)
 def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
     sample = queries.sample.add_sample(db, file)
+    db.commit()
 
     try:
         karton.push_file(file, sample.sha256)
@@ -37,7 +38,10 @@ def get_sample(sha256: str, db=Depends(get_db)):
 @router.post("/{sha256}/minhash", response_model=schemas.Minhash)
 def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-    if sample and sample.minhashes:
+    if not sample:
+        return None
+
+    if sample.minhashes:
         if any(x.minhash_type == minhash.minhash_type for x in sample.minhashes):
             return None
 
@@ -45,6 +49,7 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
         db, minhash.seed, minhash.hash_values, minhash.minhash_type
     )
     queries.sample.add_minhash_to_sample(db, sample, new_minhash)
+    db.commit()
 
     try:
         karton.push_minhash(sha256, minhash.seed, minhash.hash_values, minhash.minhash_type)
@@ -60,8 +65,28 @@ def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(ge
     return sample.minhashes
 
 
-@router.get("/{sha256}/related", response_model=List[schemas.Sample])
+@router.get("/{sha256}/parents", response_model=List[schemas.Sample])
 def get_parents(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        return None
+
+    return list(sample.parent)
+
+
+@router.get("/{sha256}/children", response_model=List[schemas.Sample])
+def get_parents(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        return None
+
+    return list(sample.children)
+
+
+@router.get("/{sha256}/related", response_model=List[schemas.Sample])
+def get_related(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
 
     if not sample:

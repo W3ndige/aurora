@@ -24,7 +24,6 @@ class InputMinhash(BaseModel):
 
 class Minhash(BaseModel):
     id: int
-    sample_id: int
     seed: int
     hash_values: List[int]
     minhash_type: str

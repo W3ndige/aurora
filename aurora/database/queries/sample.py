@@ -26,10 +26,7 @@ def add_sample(db: Session, file: UploadFile) -> models.Sample:
 
     if not sample:
         sample = models.Sample.from_uploadfile(file)
-
         db.add(sample)
-        db.commit()
-        db.refresh(sample)
 
     return sample
 
@@ -38,8 +35,4 @@ def add_minhash_to_sample(
     db: Session, sample: models.Sample, minhash: models.Minhash
 ) -> None:
 
-    if any(x.minhash_type == minhash.minhash_type for x in sample.minhashes):
-        return None
-
     sample.minhashes.append(minhash)
-    db.commit()
