@@ -16,11 +16,14 @@ Base = declarative_base(name="Base")
 
 # Useful ENUMs
 
-ANALYSIS_TYPE = ENUM("ASCII_STRINGS", "WIDE_STRINGS", "YARA", name="analysis_type")
+ANALYSIS_TYPE = ENUM(
+    "ASCII_STRINGS", "WIDE_STRINGS", "YARA", "SSDEEP", name="analysis_type"
+)
 
 from .models import Relation  # noqa E402, E401
 from .models import Sample  # noqa E402, E401
 from .models import Minhash  # noqa E402, E401
+from .models import SsDeep  # noqa E402, E401
 
 recreate_db(Base, engine)
 

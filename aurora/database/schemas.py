@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 
 
 class Sample(BaseModel):
@@ -50,3 +50,14 @@ class Relation(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class SsDeep(BaseModel):
+    id: int
+    chunksize: int
+    ssdeep: str
+    sample: Sample
+
+    class Config:
+        orm_mode = True
+        arbitrary_types_allowed = True

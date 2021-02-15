@@ -30,3 +30,13 @@ def push_minhash(sha256: str, seed: int, hash_values: List, minhash_type: str) -
     task.add_payload("minhash_type", minhash_type)
 
     producer.send_task(task)
+
+
+def push_ssdeep(sha256: str, chunksize: int, ssdeep: List) -> None:
+    task = Task({"type": "feature", "kind": "ssdeep"})
+
+    task.add_payload("sha256", sha256)
+    task.add_payload("chunksize", chunksize)
+    task.add_payload("ssdeep", ssdeep)
+
+    producer.send_task(task)

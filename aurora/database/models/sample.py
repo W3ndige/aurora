@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import List
 from fastapi import UploadFile
 from collections import namedtuple
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
 
@@ -27,6 +27,7 @@ class Sample(Base):
     sha512 = Column(String(128), nullable=False, index=True, unique=True)
 
     minhashes = relationship("Minhash")
+    ssdeep = relationship("SsDeep", uselist=False)
 
     children = association_proxy(
         "related_children",

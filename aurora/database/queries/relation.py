@@ -18,10 +18,7 @@ def add_relation(
 ) -> models.Relation:
 
     relation = models.Relation(
-        parent=parent,
-        child=child,
-        relation_type=rel_type,
-        confidence=confidence
+        parent=parent, child=child, relation_type=rel_type, confidence=confidence
     )
 
     return relation

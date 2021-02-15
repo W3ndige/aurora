@@ -34,3 +34,9 @@ def add_minhash_to_sample(
 ) -> None:
 
     sample.minhashes.append(minhash)
+
+
+def add_ssdeep_to_sample(
+    db: Session, sample: models.Sample, ssdeep: models.SsDeep
+) -> None:
+    sample.ssdeep = ssdeep

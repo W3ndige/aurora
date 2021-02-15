@@ -18,6 +18,15 @@ def get_samples(db=Depends(get_db)):
 @router.post("/", response_model=schemas.Sample)
 def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
     sample = queries.sample.add_sample(db, file)
+    if not sample.ssdeep:
+        ssdeep = queries.ssdeep.add_ssdeep(db, file)
+        queries.sample.add_ssdeep_to_sample(db, sample, ssdeep)
+
+        try:
+            karton.push_ssdeep(sample.sha256, ssdeep.chunksize, ssdeep.ssdeep)
+        except RuntimeError:
+            pass
+
     db.commit()
 
     try:
@@ -67,6 +76,12 @@ def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(ge
     return sample.minhashes
 
 
+@router.get("/{sha256}/ssdeep", response_model=schemas.SsDeep)
+def get_ssdeep(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    return sample.ssdeep
+
+
 @router.get("/{sha256}/parents", response_model=List[schemas.Sample])
 def get_parents(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
@@ -78,7 +93,7 @@ def get_parents(sha256: str, db=Depends(get_db)):
 
 
 @router.get("/{sha256}/children", response_model=List[schemas.Sample])
-def get_parents(sha256: str, db=Depends(get_db)):
+def get_children(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
 
     if not sample:
