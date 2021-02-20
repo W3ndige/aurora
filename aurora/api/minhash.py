@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, Depends
 
-from aurora.database import get_db, queries, schemas
+from aurora.database import get_db, queries, schemas, models
 
 router = APIRouter(
     prefix="/minhash",
@@ -10,5 +10,5 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.Minhash])
-def get_minhashes(db=Depends(get_db)):
-    return queries.minhash.get_minhashes(db)
+def get_minhashes(minhash_type: models.MinhashType = None, db=Depends(get_db)):
+    return queries.minhash.get_minhashes(db, minhash_type)

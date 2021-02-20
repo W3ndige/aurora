@@ -51,10 +51,6 @@ class Sample(Base):
         ),
     )
 
-    @property
-    def related(self) -> List[Sample]:
-        return self.parents + self.children
-
     @staticmethod
     def from_uploadfile(file: UploadFile) -> Sample:
         file.file.seek(0, 2)

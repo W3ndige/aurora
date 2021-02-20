@@ -89,7 +89,7 @@ def get_parents(sha256: str, db=Depends(get_db)):
     if not sample:
         return None
 
-    return list(sample.parent)
+    return list(queries.sample.get_sample_parents(db, sample))
 
 
 @router.get("/{sha256}/children", response_model=List[schemas.Sample])
@@ -99,7 +99,7 @@ def get_children(sha256: str, db=Depends(get_db)):
     if not sample:
         return None
 
-    return list(sample.children)
+    return list(queries.sample.get_sample_children(db, sample))
 
 
 @router.get("/{sha256}/related", response_model=List[schemas.Sample])
@@ -109,4 +109,4 @@ def get_related(sha256: str, db=Depends(get_db)):
     if not sample:
         return None
 
-    return list(sample.related)
+    return list(queries.sample.get_sample_related(db, sample))
