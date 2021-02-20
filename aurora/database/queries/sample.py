@@ -20,22 +20,35 @@ def get_sample_by_sha256(db: Session, sha256: str) -> models.Sample:
 
 
 def get_sample_parents(db: Session, sample: models.Sample) -> List[models.Sample]:
-     return db.query(models.Sample).distinct().filter(
-        models.Sample.children.any(models.Relation.child_id == sample.id)
-    ).all()
+    return (
+        db.query(models.Sample)
+        .distinct()
+        .filter(models.Sample.children.any(models.Relation.child_id == sample.id))
+        .all()
+    )
+
 
 def get_sample_children(db: Session, sample: models.Sample) -> List[models.Sample]:
-     return db.query(models.Sample).distinct().filter(
-        models.Sample.parents.any(models.Relation.parent_id == sample.id)
-    ).all()
+    return (
+        db.query(models.Sample)
+        .distinct()
+        .filter(models.Sample.parents.any(models.Relation.parent_id == sample.id))
+        .all()
+    )
+
 
 def get_sample_related(db: Session, sample: models.Sample) -> List[models.Sample]:
-    return db.query(models.Sample).distinct().filter(
-        or_(
-            models.Sample.parents.any(models.Relation.parent_id == sample.id),
-            models.Sample.children.any(models.Relation.child_id == sample.id)
+    return (
+        db.query(models.Sample)
+        .distinct()
+        .filter(
+            or_(
+                models.Sample.parents.any(models.Relation.parent_id == sample.id),
+                models.Sample.children.any(models.Relation.child_id == sample.id),
+            )
         )
-    ).all()
+        .all()
+    )
 
 
 def add_sample(db: Session, file: UploadFile) -> models.Sample:

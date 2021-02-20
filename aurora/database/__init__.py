@@ -5,13 +5,13 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 
-from .utils import recreate_db
+from aurora import config
+from aurora.database.utils import recreate_db
 
-POSTGRES_URL = "postgres+psycopg2://postgres:postgres@localhost:5432/postgres"
 
-engine: Engine = create_engine(POSTGRES_URL)
+engine: Engine = create_engine(config.POSTGRES_URI)
 
-db_session: Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+db_session: sessionmaker = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 Base = declarative_base(name="Base")
 

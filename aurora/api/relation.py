@@ -11,11 +11,11 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.Relation])
 def get_relations(
-        parent_sha256: Optional[str] = None,
-        child_sha256: Optional[str] = None,
-        confidence: Optional[models.RelationConfidence] = None,
-        relation_type: Optional[models.RelationType] = None,
-        db=Depends(get_db)
+    parent_sha256: Optional[str] = None,
+    child_sha256: Optional[str] = None,
+    confidence: Optional[models.RelationConfidence] = None,
+    relation_type: Optional[models.RelationType] = None,
+    db=Depends(get_db),
 ):
     parent = None
     child = None
@@ -25,7 +25,9 @@ def get_relations(
     if child_sha256:
         child = queries.sample.get_sample_by_sha256(db, child_sha256)
 
-    relations = queries.relation.get_relations(db, parent, child, relation_type, confidence)
+    relations = queries.relation.get_relations(
+        db, parent, child, relation_type, confidence
+    )
     return relations
 
 
@@ -44,10 +46,10 @@ def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
 
 @router.get("/{sha256}", response_model=List[schemas.Relation])
 def get_sample_relations(
-        sha256: str,
-        confidence: Optional[models.RelationConfidence] = None,
-        relation_type: Optional[models.RelationType] = None,
-        db=Depends(get_db)
+    sha256: str,
+    confidence: Optional[models.RelationConfidence] = None,
+    relation_type: Optional[models.RelationType] = None,
+    db=Depends(get_db),
 ):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
 

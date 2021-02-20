@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from aurora.database import models
 
 
-def get_minhashes(db: Session, minhash_type: models.MinhashType) -> List[models.Minhash]:
+def get_minhashes(
+    db: Session, minhash_type: models.MinhashType
+) -> List[models.Minhash]:
     filters = []
     if minhash_type:
         filters.append(models.Minhash.minhash_type == minhash_type)

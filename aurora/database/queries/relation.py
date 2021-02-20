@@ -5,11 +5,11 @@ from aurora.database import models
 
 
 def get_relations(
-        db: Session,
-        parent: models.Sample = None,
-        child: models.Sample = None,
-        relation_type: models.RelationType = None,
-        confidence: models.RelationConfidence = None
+    db: Session,
+    parent: models.Sample = None,
+    child: models.Sample = None,
+    relation_type: models.RelationType = None,
+    confidence: models.RelationConfidence = None,
 ) -> List[models.Relation]:
 
     filters = []
@@ -30,10 +30,10 @@ def get_relations(
 
 
 def get_sample_relations(
-        db: Session,
-        sample: models.Sample,
-        relation_type: models.RelationType = None,
-        confidence: models.RelationConfidence = None
+    db: Session,
+    sample: models.Sample,
+    relation_type: models.RelationType = None,
+    confidence: models.RelationConfidence = None,
 ) -> List[models.Relation]:
 
     filters = []
@@ -46,8 +46,10 @@ def get_sample_relations(
     return (
         db.query(models.Relation)
         .filter(
-            (models.Relation.child_id == sample.id) | (models.Relation.parent_id == sample.id)
-        ).filter(*filters)
+            (models.Relation.child_id == sample.id)
+            | (models.Relation.parent_id == sample.id)
+        )
+        .filter(*filters)
         .all()
     )
 
