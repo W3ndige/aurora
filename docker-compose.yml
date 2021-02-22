@@ -1,0 +1,26 @@
+services:
+  aurora:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    ports:
+      - "80:80"
+    restart: on-failure
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  redis:
+    image: redis:alpine
+  minio:
+    image: minio/minio
+    command: server /data
+    volumes:
+      - /tmp/minio:/data
