@@ -5,11 +5,25 @@ services:
       dockerfile: deploy/Dockerfile
     depends_on:
       - postgres
-      - redis
-      - minio
     ports:
       - "80:80"
     restart: on-failure
+  karton:
+    build:
+      context: kartons
+      dockerfile: Dockerfile
+  minhash:
+    build:
+      context: kartons
+      dockerfile: kartons/minhash/Dockerfile
+  similarity:
+    build:
+      context: kartons
+      dockerfile: kartons/similarity/Dockerfile
+  strings:
+    build:
+      context: kartons
+      dockerfile: kartons/strings/Dockerfile
   postgres:
     image: postgres
     restart: always
