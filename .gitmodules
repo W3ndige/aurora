@@ -1,7 +1,3 @@
 [submodule "karton"]
 	path = kartons
 	url = git@github.com:W3ndige/aurora-karton.git
-
-[submodule "front"]
-	path = front
-	url = git@github.com:W3ndige/aurora-front.git
