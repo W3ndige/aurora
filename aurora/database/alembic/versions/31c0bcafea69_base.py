@@ -1,8 +1,8 @@
 """Base
 
-Revision ID: 589b1834c0e3
+Revision ID: 31c0bcafea69
 Revises: 
-Create Date: 2021-02-22 16:22:32.898776
+Create Date: 2021-02-22 16:30:24.906151
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "589b1834c0e3"
+revision = "31c0bcafea69"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,13 +30,10 @@ def upgrade():
         sa.Column("sha512", sa.String(length=128), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_sample_filename"), "sample", ["filename"], unique=False)
-    op.create_index(op.f("ix_sample_filesize"), "sample", ["filesize"], unique=False)
-    op.create_index(op.f("ix_sample_filetype"), "sample", ["filetype"], unique=False)
-    op.create_index(op.f("ix_sample_md5"), "sample", ["md5"], unique=True)
-    op.create_index(op.f("ix_sample_sha1"), "sample", ["sha1"], unique=True)
+    op.create_index(op.f("ix_sample_md5"), "sample", ["md5"], unique=False)
+    op.create_index(op.f("ix_sample_sha1"), "sample", ["sha1"], unique=False)
     op.create_index(op.f("ix_sample_sha256"), "sample", ["sha256"], unique=True)
-    op.create_index(op.f("ix_sample_sha512"), "sample", ["sha512"], unique=True)
+    op.create_index(op.f("ix_sample_sha512"), "sample", ["sha512"], unique=False)
     op.create_table(
         "minhash",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -108,8 +105,5 @@ def downgrade():
     op.drop_index(op.f("ix_sample_sha256"), table_name="sample")
     op.drop_index(op.f("ix_sample_sha1"), table_name="sample")
     op.drop_index(op.f("ix_sample_md5"), table_name="sample")
-    op.drop_index(op.f("ix_sample_filetype"), table_name="sample")
-    op.drop_index(op.f("ix_sample_filesize"), table_name="sample")
-    op.drop_index(op.f("ix_sample_filename"), table_name="sample")
     op.drop_table("sample")
     # ### end Alembic commands ###

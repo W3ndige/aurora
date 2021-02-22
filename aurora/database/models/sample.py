@@ -18,13 +18,13 @@ class Sample(Base):
     __tablename__ = "sample"
 
     id = Column(Integer, primary_key=True)
-    filename = Column(String, nullable=False, index=True)
-    filesize = Column(Integer, nullable=False, index=True)
-    filetype = Column(String, nullable=False, index=True)
-    md5 = Column(String(32), nullable=False, index=True, unique=True)
-    sha1 = Column(String(40), nullable=False, index=True, unique=True)
+    filename = Column(String, nullable=False)
+    filesize = Column(Integer, nullable=False)
+    filetype = Column(String, nullable=False)
+    md5 = Column(String(32), nullable=False, index=True)
+    sha1 = Column(String(40), nullable=False, index=True)
     sha256 = Column(String(64), nullable=False, index=True, unique=True)
-    sha512 = Column(String(128), nullable=False, index=True, unique=True)
+    sha512 = Column(String(128), nullable=False, index=True)
 
     minhashes = relationship("Minhash")
     ssdeep = relationship("SsDeep", uselist=False)
