@@ -1,0 +1,3 @@
+[submodule "karton"]
+	path = karton
+	url = git@github.com:W3ndige/aurora-karton.git

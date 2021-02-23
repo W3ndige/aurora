@@ -7,8 +7,8 @@ from aurora.database import models
 from aurora.core.utils import get_sha256
 
 
-def get_samples(db: Session) -> List[models.Sample]:
-    return db.query(models.Sample).all()
+def get_samples(db: Session, offset: int = 0, limit: int = 50) -> List[models.Sample]:
+    return db.query(models.Sample).offset(offset).limit(limit).all()
 
 
 def get_number_of_samples(db: Session) -> int:
