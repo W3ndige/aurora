@@ -11,6 +11,7 @@ from aurora.database import Base
 class RelationType(str, enum.Enum):
     ASCII_STRINGS = "ASCII_STRINGS"
     WIDE_STRINGS = "WIDE_STRINGS"
+    STRING = "STRING"
     SSDEEP = "SSDEEP"
 
 

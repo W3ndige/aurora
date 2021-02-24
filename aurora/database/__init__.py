@@ -16,6 +16,8 @@ from .models import Relation  # noqa E402, E401
 from .models import Sample  # noqa E402, E401
 from .models import Minhash  # noqa E402, E401
 from .models import SsDeep  # noqa E402, E401
+from .models import String  # noqa E402, E401
+
 
 def get_db():
     db = db_session()

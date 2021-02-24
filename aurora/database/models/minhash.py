@@ -5,6 +5,7 @@ import datasketch
 import sqlalchemy as sql
 
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import JSONB
 
 from aurora.database import Base
 
@@ -22,6 +23,7 @@ class Minhash(Base):
     seed = sql.Column(sql.BIGINT, nullable=False)
     hash_values = sql.Column(sql.ARRAY(sql.BIGINT()), nullable=False)
     minhash_type = sql.Column(sql.Enum(MinhashType), nullable=False, index=True)
+    extra_data = sql.Column(JSONB)
 
     sql.UniqueConstraint("sample_id", "analysis_type", name="unique_analysis_sample")
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional, Dict, Any
 
 from aurora.database.models.relation import RelationType
 from aurora.database.models.minhash import MinhashType
@@ -23,6 +23,7 @@ class InputMinhash(BaseModel):
     seed: int
     hash_values: List[int]
     minhash_type: MinhashType
+    extra_data: Optional[Dict[str, Any]]
 
 
 class Minhash(BaseModel):
@@ -31,6 +32,7 @@ class Minhash(BaseModel):
     hash_values: List[int]
     minhash_type: MinhashType
     sample: Sample
+    extra_data: Optional[Dict[str, Any]]
 
     class Config:
         orm_mode = True
@@ -59,6 +61,20 @@ class SsDeep(BaseModel):
     id: int
     chunksize: int
     ssdeep: str
+    sample: Sample
+
+    class Config:
+        orm_mode = True
+        arbitrary_types_allowed = True
+
+
+class InputString(BaseModel):
+    value: str
+
+
+class String(BaseModel):
+    id: int
+    value: str
     sample: Sample
 
     class Config:

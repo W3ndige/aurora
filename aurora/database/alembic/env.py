@@ -17,9 +17,7 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-config.set_main_option(
-    "sqlalchemy.url", aurora_config.POSTGRES_URI
-)
+config.set_main_option("sqlalchemy.url", aurora_config.POSTGRES_URI)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -72,9 +70,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

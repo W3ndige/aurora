@@ -13,4 +13,6 @@ router = APIRouter()
 def index(request: Request, offset: int = 0, db=Depends(get_db)):
     samples = queries.sample.get_samples(db, offset=offset)
 
-    return templates.TemplateResponse("index.html", {"request": request, "samples": samples, "offset": offset})
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "samples": samples, "offset": offset}
+    )

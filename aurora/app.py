@@ -4,6 +4,7 @@ from aurora.api import sample
 from aurora.api import minhash
 from aurora.api import relation
 from aurora.api import ssdeep
+from aurora.api import string
 
 from aurora.front import front
 
@@ -13,6 +14,7 @@ api_v1.include_router(sample.router)
 api_v1.include_router(minhash.router)
 api_v1.include_router(relation.router)
 api_v1.include_router(ssdeep.router)
+api_v1.include_router(string.router)
 
 app = FastAPI()
 

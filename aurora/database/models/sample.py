@@ -27,6 +27,7 @@ class Sample(Base):
     sha512 = Column(String(128), nullable=False, index=True)
 
     minhashes = relationship("Minhash")
+    strings = relationship("String")
     ssdeep = relationship("SsDeep", uselist=False)
 
     children = association_proxy(
