@@ -10,5 +10,5 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.SsDeep])
-def get_samples(chunksize: Optional[int] = None, db=Depends(get_db)):
+def get_ssdeep_hashes(chunksize: Optional[int] = None, db=Depends(get_db)):
     return queries.ssdeep.get_ssdeep_hashes(db, chunksize=chunksize)

@@ -16,7 +16,7 @@ def push_file(file: UploadFile, sha256: str) -> None:
 
     task = Task({"type": "sample", "kind": "raw"})
 
-    task.add_resource("sample", resource)
+    task.add_payload("sample", resource)
 
     producer.send_task(task)
 

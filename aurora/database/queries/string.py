@@ -10,9 +10,15 @@ def get_strings(db: Session):
     return strings
 
 
-def add_string(db: Session, value: str) -> models.String:
-    string = models.String(value=value)
+def add_string(db: Session, value: str, sha256: str) -> models.String:
+    string = models.String(value=value, sha256=sha256)
 
     db.add(string)
+
+    return string
+
+
+def get_string(db: Session, sha256: str) -> models.String:
+    string = db.query(models.String).filter(models.String.sha256 == sha256).first()
 
     return string

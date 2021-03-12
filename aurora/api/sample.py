@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from fastapi import APIRouter, UploadFile, File, Depends
 
 from aurora.core import karton
@@ -85,12 +85,21 @@ def get_ssdeep(sha256: str, db=Depends(get_db)):
 @router.post("/{sha256}/string", response_model=schemas.String)
 def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-    string = queries.string.add_string(db, string.value)
+    db_string = queries.string.add_string(db, string.value, string.sha256)
 
-    sample.strings.append(string)
+    sample.strings.append(db_string)
     db.commit()
 
-    return string
+    return db_string
+
+
+@router.get("/{sha256}/string", response_model=List[schemas.String])
+def get_strings(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        return None
+
+    return sample.strings
 
 
 @router.get("/{sha256}/parents", response_model=List[schemas.Sample])

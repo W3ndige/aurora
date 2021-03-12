@@ -70,11 +70,13 @@ class SsDeep(BaseModel):
 
 class InputString(BaseModel):
     value: str
+    sha256: Optional[str]
 
 
 class String(BaseModel):
     id: int
     value: str
+    sha256: str
     sample: Sample
 
     class Config:
