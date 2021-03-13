@@ -1,7 +1,7 @@
 import logging
 
 from typing import List
-from sqlalchemy import func
+from sqlalchemy import func, tuple_
 from sqlalchemy.orm import Session
 
 from aurora.database import models, schemas
@@ -21,6 +21,28 @@ def get_relations(
 
     relations = db.query(models.Relation).filter(*query_filters).all()
     return relations
+
+
+def get_confident_relation(db: Session) -> List[models.Relation]:
+    relations_with_bigger_count = (
+        db.query(models.Relation.parent_id, models.Relation.child_id)
+        .group_by(
+            models.Relation.parent_id,
+            models.Relation.child_id
+        )
+        .having(func.count(models.Relation.parent_id) >= 2)
+        .subquery()
+    )
+
+    confident_relations = (
+        db.query(models.Relation).
+        filter(
+            tuple_(models.Relation.parent_id, models.Relation.child_id).
+                in_(relations_with_bigger_count)
+        ).all()
+    )
+
+    return confident_relations
 
 
 def get_relations_by_parent(

@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 from fastapi import APIRouter, UploadFile, File, Depends
 
 from aurora.core import karton
-from aurora.database import get_db, queries, schemas
+from aurora.database import get_db, queries, schemas, models
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
         try:
             karton.push_ssdeep(sample.sha256, ssdeep.chunksize, ssdeep.ssdeep)
         except RuntimeError:
-            logger.exception(f"Couldn't push Sample to karton. Sample {sha256}")
+            logger.exception(f"Couldn't push Sample to karton. Sample {sample.sha256}")
 
     db.commit()
 
@@ -77,7 +77,9 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
 @router.get("/{sha256}/minhash", response_model=List[schemas.Minhash])
 def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-    return sample.minhashes
+    type = models.MinhashType[minhash_type]
+
+    return queries.minhash.get_sample_minhash(db, sample, type)
 
 
 @router.get("/{sha256}/ssdeep", response_model=schemas.SsDeep)

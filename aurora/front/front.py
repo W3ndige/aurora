@@ -35,7 +35,7 @@ def index(
         confidence=confidence
     )
 
-    relations = queries.relation.get_relations(db, filters)
+    relations = queries.relation.get_confident_relation(db)
 
     network = create_network(relations)
 
@@ -45,7 +45,8 @@ def index(
         "network.html", {
             "request": request,
             "nodes": nodes,
-            "edges": edges
+            "edges": edges,
+            "options": options
         }
     )
 

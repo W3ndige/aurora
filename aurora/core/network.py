@@ -19,6 +19,8 @@ def create_network(relations: List[models.Relation]) -> Network:
             relation.parent_id, relation.child_id, title=relation.relation_type.value
         )
 
+
+    network.set_edge_smooth("dynamic")
     return network
 
 

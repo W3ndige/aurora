@@ -14,6 +14,18 @@ def get_minhashes(
     return db.query(models.Minhash).filter(*filters).all()
 
 
+def get_sample_minhash(
+        db: Session, sample: models.Sample, type: models.MinhashType
+) -> models.Minhash:
+
+    return (
+        db.query(models.Minhash)
+        .filter(models.Minhash.sample_id == sample.id)
+        .filter(models.Minhash.minhash_type == type)
+        .all()
+    )
+
+
 def add_minhash(
     db: Session,
     seed: int,

@@ -13,7 +13,7 @@
         nodes: {{ nodes | safe }},
         edges: {{ edges | safe }}
     };
-    var options = {};
+    var options = {{ options | safe}};
     var network = new vis.Network(container, data, options);
 </script>
 
