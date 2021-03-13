@@ -1,0 +1,21 @@
+{% extends 'template.html' %}
+
+{% block content %}
+
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+<div class="vh-100" id="network"></div>
+
+
+<script type="text/javascript">
+    var container = document.getElementById('network');
+    var data = {
+        nodes: {{ nodes | safe }},
+        edges: {{ edges | safe }}
+    };
+    var options = {};
+    var network = new vis.Network(container, data, options);
+</script>
+
+
+{% endblock %}

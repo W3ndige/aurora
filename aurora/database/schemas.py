@@ -47,8 +47,8 @@ class InputRelation(BaseModel):
 
 
 class RelationFilter(BaseModel):
-    relation_type: RelationType
-    confidence: str
+    relation_type: Optional[RelationType]
+    confidence: Optional[str]
 
 
 class Relation(BaseModel):

@@ -1,8 +1,12 @@
-from typing import Optional, List
+import logging
+
+from typing import List
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from aurora.database import models, schemas
 
+logger = logging.getLogger(__name__)
 
 def get_relations(
     db: Session, filters: schemas.RelationFilter = None
