@@ -11,24 +11,16 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.Relation])
 def get_relations(
-    parent_sha256: Optional[str] = None,
-    child_sha256: Optional[str] = None,
-    confidence: Optional[models.RelationConfidence] = None,
     relation_type: Optional[models.RelationType] = None,
+    confidence: Optional[str] = None,
     db=Depends(get_db),
 ):
-    parent = None
-    child = None
-    if parent_sha256:
-        parent = queries.sample.get_sample_by_sha256(db, parent_sha256)
-
-    if child_sha256:
-        child = queries.sample.get_sample_by_sha256(db, child_sha256)
-
-    relations = queries.relation.get_relations(
-        db, parent, child, relation_type, confidence
+    filters = schemas.RelationFilter(
+        relation_type=relation_type,
+        confidence=confidence
     )
-    return relations
+
+    return queries.relation.get_relations(db, filters)
 
 
 @router.post("/", response_model=schemas.Relation)
@@ -44,13 +36,54 @@ def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
     return relation
 
 
-@router.get("/{sha256}", response_model=List[schemas.Relation])
-def get_sample_relations(
+@router.get("/parent/{sha256}", response_model=List[schemas.Relation])
+def get_relations_by_parent(
     sha256: str,
-    confidence: Optional[models.RelationConfidence] = None,
     relation_type: Optional[models.RelationType] = None,
-    db=Depends(get_db),
+    confidence: Optional[str] = None,
+    db=Depends(get_db)
 ):
+
+    filters = schemas.RelationFilter(
+        relation_type=relation_type,
+        confidence=confidence
+    )
+
+    parent = queries.sample.get_sample_by_sha256(db, sha256)
+
+    return queries.relation.get_relations_by_parent(db, parent, filters)
+
+
+@router.get("/child/{sha256}", response_model=List[schemas.Relation])
+def get_relations_by_child(
+    sha256: str,
+    relation_type: Optional[models.RelationType] = None,
+    confidence: Optional[str] = None,
+    db=Depends(get_db)
+):
+
+    filters = schemas.RelationFilter(
+        relation_type=relation_type,
+        confidence=confidence
+    )
+
+    parent = queries.sample.get_sample_by_sha256(db, sha256)
+
+    return queries.relation.get_relations_by_child(db, parent, filters)
+
+
+@router.get("/{sha256}", response_model=List[schemas.Relation])
+def get_relations_by_hash(
+    sha256: str,
+    relation_type: Optional[models.RelationType] = None,
+    confidence: Optional[str] = None,
+    db=Depends(get_db)
+):
+    filters = schemas.RelationFilter(
+        relation_type=relation_type,
+        confidence=confidence
+    )
+
     sample = queries.sample.get_sample_by_sha256(db, sha256)
 
-    return queries.relation.get_sample_relations(db, sample, relation_type, confidence)
+    return queries.relation.get_relations_by_hash(db, sample, filters)

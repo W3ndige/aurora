@@ -46,6 +46,11 @@ class InputRelation(BaseModel):
     confidence: str
 
 
+class RelationFilter(BaseModel):
+    relation_type: RelationType
+    confidence: str
+
+
 class Relation(BaseModel):
     id: int
     parent_id: int

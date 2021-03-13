@@ -1,8 +1,12 @@
+import logging
+
 from typing import List, Optional, Union
 from fastapi import APIRouter, UploadFile, File, Depends
 
 from aurora.core import karton
 from aurora.database import get_db, queries, schemas
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/sample",
@@ -25,7 +29,7 @@ def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
         try:
             karton.push_ssdeep(sample.sha256, ssdeep.chunksize, ssdeep.ssdeep)
         except RuntimeError:
-            pass
+            logger.exception(f"Couldn't push Sample to karton. Sample {sha256}")
 
     db.commit()
 
@@ -65,7 +69,7 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
             sha256, minhash.seed, minhash.hash_values, minhash.minhash_type
         )
     except RuntimeError:
-        pass
+        logger.exception(f"Couldn't push Minhash to karton. Sample {sha256}")
 
     return new_minhash
 
@@ -105,7 +109,6 @@ def get_strings(sha256: str, db=Depends(get_db)):
 @router.get("/{sha256}/parents", response_model=List[schemas.Sample])
 def get_parents(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-
     if not sample:
         return None
 
@@ -115,7 +118,6 @@ def get_parents(sha256: str, db=Depends(get_db)):
 @router.get("/{sha256}/children", response_model=List[schemas.Sample])
 def get_children(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-
     if not sample:
         return None
 
@@ -125,7 +127,6 @@ def get_children(sha256: str, db=Depends(get_db)):
 @router.get("/{sha256}/related", response_model=List[schemas.Sample])
 def get_related(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-
     if not sample:
         return None
 

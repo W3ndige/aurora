@@ -20,4 +20,6 @@ def get_ssdeep_hashes(
 def add_ssdeep(db: Session, file: UploadFile) -> models.SsDeep:
     ssdeep = models.SsDeep.from_uploadfile(file)
 
+    db.add(ssdeep)
+
     return ssdeep
