@@ -6,7 +6,7 @@ config = Config("karton.ini")
 producer = Producer(config)
 
 
-def push_file(file: UploadFile, sha256: str) -> None:
+def push_file(file: UploadFile, mime: str, sha256: str) -> None:
     file.file.seek(0, 0)
 
     filename = file.filename
@@ -14,7 +14,7 @@ def push_file(file: UploadFile, sha256: str) -> None:
 
     resource = Resource(filename, content, sha256=sha256)
 
-    task = Task({"type": "sample", "kind": "raw"})
+    task = Task({"type": "sample", "kind": mime})
 
     task.add_payload("sample", resource)
 

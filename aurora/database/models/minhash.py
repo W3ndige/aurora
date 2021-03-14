@@ -12,6 +12,8 @@ from aurora.database import Base
 
 class MinhashType(str, enum.Enum):
     STRINGS = "STRINGS"
+    GEN_DISASM = "GEN_DISASM"
+
 
 class Minhash(Base):
     __tablename__ = "minhash"

@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 from fastapi import APIRouter, UploadFile, File, Depends
 
 from aurora.core import karton
+from aurora.core.utils import get_magic
 from aurora.database import get_db, queries, schemas, models
 
 logger = logging.getLogger(__name__)
@@ -34,7 +35,8 @@ def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
     db.commit()
 
     try:
-        karton.push_file(file, sample.sha256)
+        sample_mime = get_magic(file.file, mimetype=True)
+        karton.push_file(file, sample_mime, sample.sha256)
     except RuntimeError:
         pass
 

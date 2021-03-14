@@ -1,8 +1,8 @@
 """Base
 
-Revision ID: 1fb9732aff55
+Revision ID: f530dbf9ce48
 Revises: 
-Create Date: 2021-03-14 12:57:08.930652
+Create Date: 2021-03-14 17:08:17.759706
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "1fb9732aff55"
+revision = "f530dbf9ce48"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,7 +41,9 @@ def upgrade():
         sa.Column("seed", sa.BIGINT(), nullable=False),
         sa.Column("hash_values", sa.ARRAY(sa.BIGINT()), nullable=False),
         sa.Column(
-            "minhash_type", sa.Enum("STRINGS", name="minhashtype"), nullable=False
+            "minhash_type",
+            sa.Enum("STRINGS", "GEN_DISASM", name="minhashtype"),
+            nullable=False,
         ),
         sa.Column("extra_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.ForeignKeyConstraint(
@@ -60,7 +62,7 @@ def upgrade():
         sa.Column("child_id", sa.Integer(), nullable=False),
         sa.Column(
             "relation_type",
-            sa.Enum("STRINGS", "STRING", "SSDEEP", name="relationtype"),
+            sa.Enum("STRINGS", "STRING", "SSDEEP", "GEN_DISASM", name="relationtype"),
             nullable=False,
         ),
         sa.Column(

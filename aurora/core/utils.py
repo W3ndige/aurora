@@ -6,9 +6,9 @@ import hashlib
 from typing import IO
 
 
-def get_magic(stream: IO) -> str:
+def get_magic(stream: IO, mimetype: bool = False) -> str:
     stream.seek(0, os.SEEK_SET)
-    return magic.from_buffer(stream.read())
+    return magic.from_buffer(stream.read(), mime=mimetype)
 
 
 def get_hash(stream: IO, hash_obj, digest_func) -> str:

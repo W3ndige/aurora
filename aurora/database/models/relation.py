@@ -12,6 +12,7 @@ class RelationType(str, enum.Enum):
     STRINGS = "STRINGS"
     STRING = "STRING"
     SSDEEP = "SSDEEP"
+    GEN_DISASM = "GEN_DISASM"
 
 
 class RelationConfidence(str, enum.Enum):
