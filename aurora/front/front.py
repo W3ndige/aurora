@@ -35,7 +35,7 @@ def index(
         confidence=confidence
     )
 
-    relations = queries.relation.get_confident_relation(db)
+    relations = queries.relation.get_relations(db, filters)
 
     network = create_network(relations)
 

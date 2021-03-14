@@ -77,9 +77,10 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
 @router.get("/{sha256}/minhash", response_model=List[schemas.Minhash])
 def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-    type = models.MinhashType[minhash_type]
+    if minhash_type:
+        minhash_type = models.MinhashType[minhash_type]
 
-    return queries.minhash.get_sample_minhash(db, sample, type)
+    return queries.minhash.get_sample_minhash(db, sample, minhash_type)
 
 
 @router.get("/{sha256}/ssdeep", response_model=schemas.SsDeep)

@@ -9,8 +9,7 @@ from aurora.database import Base
 
 
 class RelationType(str, enum.Enum):
-    ASCII_STRINGS = "ASCII_STRINGS"
-    WIDE_STRINGS = "WIDE_STRINGS"
+    STRINGS = "STRINGS"
     STRING = "STRING"
     SSDEEP = "SSDEEP"
 
