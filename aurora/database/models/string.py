@@ -13,6 +13,6 @@ class String(Base):
     value = sql.Column(sql.String, nullable=False)
     sha256 = sql.Column(sql.String(64), nullable=False, index=True)
 
-    sql.UniqueConstraint("sha256", "unique_string")
+    sql.UniqueConstraint("sample_id", "sha256", "unique_string")
 
     sample = relationship("Sample")

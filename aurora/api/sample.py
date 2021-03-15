@@ -34,11 +34,12 @@ def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
 
     db.commit()
 
-    try:
-        sample_mime = get_magic(file.file, mimetype=True)
-        karton.push_file(file, sample_mime, sample.sha256)
-    except RuntimeError:
-        pass
+    if not sample.minhashes:
+        try:
+            sample_mime = get_magic(file.file, mimetype=True)
+            karton.push_file(file, sample_mime, sample.sha256)
+        except RuntimeError:
+            pass
 
     return sample
 
