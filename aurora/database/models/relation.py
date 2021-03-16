@@ -15,12 +15,6 @@ class RelationType(str, enum.Enum):
     GEN_DISASM = "GEN_DISASM"
 
 
-class RelationConfidence(str, enum.Enum):
-    LOW = "LOW"
-    MEDIUM = "MEDIUM"
-    HIGH = "HIGH"
-
-
 class Relation(Base):
     __tablename__ = "relation"
 
@@ -28,7 +22,7 @@ class Relation(Base):
     parent_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False)
     child_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False)
     relation_type = sql.Column(sql.Enum(RelationType), nullable=False)
-    confidence = sql.Column(sql.Enum(RelationConfidence), nullable=False)
+    confidence = sql.Column(sql.Float, nullable=False)
 
     sql.UniqueConstraint("parent_id", "child_id", "relation_type")
 

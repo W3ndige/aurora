@@ -12,7 +12,7 @@ router = APIRouter(
 @router.get("/", response_model=List[schemas.Relation])
 def get_relations(
     relation_type: Optional[models.RelationType] = None,
-    confidence: Optional[str] = None,
+    confidence: Optional[float] = None,
     db=Depends(get_db),
 ):
     filters = schemas.RelationFilter(
@@ -25,6 +25,9 @@ def get_relations(
 
 @router.post("/", response_model=schemas.Relation)
 def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
+    if relation_input.confidence < 0 or relation_input.confidence > 1:
+        return None
+
     parent = queries.sample.get_sample_by_sha256(db, relation_input.parent_sha256)
     child = queries.sample.get_sample_by_sha256(db, relation_input.child_sha256)
 
@@ -40,7 +43,7 @@ def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
 def get_relations_by_parent(
     sha256: str,
     relation_type: Optional[models.RelationType] = None,
-    confidence: Optional[str] = None,
+    confidence: Optional[float] = None,
     db=Depends(get_db)
 ):
 
@@ -58,7 +61,7 @@ def get_relations_by_parent(
 def get_relations_by_child(
     sha256: str,
     relation_type: Optional[models.RelationType] = None,
-    confidence: Optional[str] = None,
+    confidence: Optional[float] = None,
     db=Depends(get_db)
 ):
 
@@ -76,7 +79,7 @@ def get_relations_by_child(
 def get_relations_by_hash(
     sha256: str,
     relation_type: Optional[models.RelationType] = None,
-    confidence: Optional[str] = None,
+    confidence: Optional[float] = None,
     db=Depends(get_db)
 ):
     filters = schemas.RelationFilter(

@@ -67,7 +67,7 @@ def upgrade():
         ),
         sa.Column(
             "confidence",
-            sa.Enum("LOW", "MEDIUM", "HIGH", name="relationconfidence"),
+            sa.Float(),
             nullable=False,
         ),
         sa.ForeignKeyConstraint(

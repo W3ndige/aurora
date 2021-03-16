@@ -17,7 +17,7 @@ def get_relations(
         if filters.relation_type:
             query_filters.append(models.Relation.relation_type == filters.relation_type)
         if filters.confidence:
-            query_filters.append(models.Relation.confidence == filters.confidence)
+            query_filters.append(models.Relation.confidence >= filters.confidence)
 
     relations = db.query(models.Relation).filter(*query_filters).all()
     return relations
@@ -54,7 +54,7 @@ def get_relations_by_parent(
         if filters.relation_type:
             query_filters.append(models.Relation.relation_type == filters.relation_type)
         if filters.confidence:
-            query_filters.append(models.Relation.confidence == filters.confidence)
+            query_filters.append(models.Relation.confidence >= filters.confidence)
 
     query_filters.append(models.Relation.parent_id == parent.id)
 
@@ -71,7 +71,7 @@ def get_relations_by_child(
         if filters.relation_type:
             query_filters.append(models.Relation.relation_type == filters.relation_type)
         if filters.confidence:
-            query_filters.append(models.Relation.confidence == filters.confidence)
+            query_filters.append(models.Relation.confidence >= filters.confidence)
 
     query_filters.append(models.Relation.child_id == child.id)
 
@@ -88,7 +88,7 @@ def get_relations_by_hash(
         if filters.relation_type:
             query_filters.append(models.Relation.relation_type == filters.relation_type)
         if filters.confidence:
-            query_filters.append(models.Relation.confidence == filters.confidence)
+            query_filters.append(models.Relation.confidence >= filters.confidence)
 
     relations = (
         db.query(models.Relation)

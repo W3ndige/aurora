@@ -43,12 +43,12 @@ class InputRelation(BaseModel):
     parent_sha256: str
     child_sha256: str
     type: RelationType
-    confidence: str
+    confidence: float
 
 
 class RelationFilter(BaseModel):
     relation_type: Optional[RelationType]
-    confidence: Optional[str]
+    confidence: Optional[float]
 
 
 class Relation(BaseModel):
@@ -56,7 +56,7 @@ class Relation(BaseModel):
     parent_id: int
     child_id: int
     relation_type: RelationType
-    confidence: str
+    confidence: float
 
     class Config:
         orm_mode = True
