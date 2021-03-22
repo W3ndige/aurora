@@ -1,7 +1,7 @@
 import logging
 
 from typing import List, Optional, Union
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 
 from aurora.core import karton
 from aurora.core.utils import get_magic
@@ -46,15 +46,38 @@ def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
 @router.get("/{sha256}", response_model=schemas.Sample)
 def get_sample(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     return sample
+
+
+@router.post("/{sha256}/reanalyze")
+def reanalyze(sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
+    if sample.minhashes:
+        for minhash in sample.minhashes:
+            karton.push_minhash(
+                sha256,
+                minhash.seed,
+                minhash.hash_values,
+                minhash.minhash_type
+            )
+
+    if sample.ssdeep:
+        karton.push_ssdeep(sha256, sample.ssdeep.chunksize, sample.ssdeep.ssdeep)
+
+    return "OK"
 
 
 @router.post("/{sha256}/minhash", response_model=schemas.Minhash)
 def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:
-        return None
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     if sample.minhashes:
         if any(x.minhash_type == minhash.minhash_type for x in sample.minhashes):
@@ -79,6 +102,9 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
 @router.get("/{sha256}/minhash", response_model=List[schemas.Minhash])
 def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
     if minhash_type:
         minhash_type = models.MinhashType[minhash_type]
 
@@ -88,12 +114,18 @@ def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(ge
 @router.get("/{sha256}/ssdeep", response_model=schemas.SsDeep)
 def get_ssdeep(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
     return sample.ssdeep
 
 
 @router.post("/{sha256}/string", response_model=schemas.String)
 def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
     db_string = queries.string.add_string(db, string.value, string.sha256)
 
     sample.strings.append(db_string)
@@ -106,7 +138,7 @@ def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
 def get_strings(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:
-        return None
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     return sample.strings
 
@@ -115,7 +147,7 @@ def get_strings(sha256: str, db=Depends(get_db)):
 def get_parents(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:
-        return None
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     return list(queries.sample.get_sample_parents(db, sample))
 
@@ -124,7 +156,7 @@ def get_parents(sha256: str, db=Depends(get_db)):
 def get_children(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:
-        return None
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     return list(queries.sample.get_sample_children(db, sample))
 
@@ -133,6 +165,6 @@ def get_children(sha256: str, db=Depends(get_db)):
 def get_related(sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:
-        return None
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     return list(queries.sample.get_sample_related(db, sample))

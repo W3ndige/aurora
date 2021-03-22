@@ -4,6 +4,7 @@ from pyvis.network import Network
 from aurora.database import models
 
 
+
 def create_network(relations: List[models.Relation]) -> Network:
     network = Network()
     network.barnes_hut()

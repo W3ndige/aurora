@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from aurora.database import get_db, queries, schemas, models
 
@@ -26,10 +26,15 @@ def get_relations(
 @router.post("/", response_model=schemas.Relation)
 def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
     if relation_input.confidence < 0 or relation_input.confidence > 1:
-        return None
+        raise HTTPException(status_code=400, detail=f"Confidence must be >= 0 or <= 1. Got {relation_input.confidence}")
 
     parent = queries.sample.get_sample_by_sha256(db, relation_input.parent_sha256)
     child = queries.sample.get_sample_by_sha256(db, relation_input.child_sha256)
+    if not parent:
+        raise HTTPException(status_code=404, detail=f"Parent {relation_input.parent_sha256} not found.")
+
+    if not child:
+        raise HTTPException(status_code=404, detail=f"Child {relation_input.child_sha256} not found.")
 
     relation = queries.relation.add_relation(
         db, parent, child, relation_input.type, relation_input.confidence
@@ -53,6 +58,8 @@ def get_relations_by_parent(
     )
 
     parent = queries.sample.get_sample_by_sha256(db, sha256)
+    if not parent:
+        raise HTTPException(status_code=404, detail=f"Parent {sha256} not found.")
 
     return queries.relation.get_relations_by_parent(db, parent, filters)
 
@@ -70,9 +77,11 @@ def get_relations_by_child(
         confidence=confidence
     )
 
-    parent = queries.sample.get_sample_by_sha256(db, sha256)
+    child = queries.sample.get_sample_by_sha256(db, sha256)
+    if not child:
+        raise HTTPException(status_code=404, detail=f"Child {sha256} not found.")
 
-    return queries.relation.get_relations_by_child(db, parent, filters)
+    return queries.relation.get_relations_by_child(db, child, filters)
 
 
 @router.get("/{sha256}", response_model=List[schemas.Relation])
@@ -88,5 +97,7 @@ def get_relations_by_hash(
     )
 
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     return queries.relation.get_relations_by_hash(db, sample, filters)
