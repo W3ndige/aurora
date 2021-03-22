@@ -9,10 +9,10 @@ from aurora.database import Base
 
 
 class RelationType(str, enum.Enum):
-    STRINGS = "STRINGS"
+    STRINGS_MINHASH = "STRINGS_MINHASH"
+    DISASM_MINHASH = "DISASM_MINHASH"
     STRING = "STRING"
     SSDEEP = "SSDEEP"
-    GEN_DISASM = "GEN_DISASM"
 
 
 class Relation(Base):

@@ -42,7 +42,7 @@ def upgrade():
         sa.Column("hash_values", sa.ARRAY(sa.BIGINT()), nullable=False),
         sa.Column(
             "minhash_type",
-            sa.Enum("STRINGS", "GEN_DISASM", name="minhashtype"),
+            sa.Enum("STRINGS_MINHASH", "DISASM_MINHASH", name="minhashtype"),
             nullable=False,
         ),
         sa.Column("extra_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
@@ -62,7 +62,7 @@ def upgrade():
         sa.Column("child_id", sa.Integer(), nullable=False),
         sa.Column(
             "relation_type",
-            sa.Enum("STRINGS", "STRING", "SSDEEP", "GEN_DISASM", name="relationtype"),
+            sa.Enum("STRINGS_MINHASH", "DISASM_MINHASH", "STRING", "SSDEEP", name="relationtype"),
             nullable=False,
         ),
         sa.Column(
