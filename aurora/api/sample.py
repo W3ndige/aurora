@@ -1,10 +1,10 @@
 import logging
 
-from typing import List, Optional, Union
+from typing import List, Optional
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 
 from aurora.core import karton
-from aurora.core.utils import get_magic
+from aurora.core.utils import get_magic, get_sha256
 from aurora.database import get_db, queries, schemas, models
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,39 @@ def get_samples(db=Depends(get_db)):
 
 @router.post("/", response_model=schemas.Sample)
 def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
+    sha256 = get_sha256(file.file)
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if sample:
+        return sample
+
     sample = queries.sample.add_sample(db, file)
+    if not sample.ssdeep:
+        ssdeep = queries.ssdeep.add_ssdeep(db, file)
+        queries.sample.add_ssdeep_to_sample(db, sample, ssdeep)
+
+        try:
+            karton.push_ssdeep(sample.sha256, ssdeep.chunksize, ssdeep.ssdeep)
+        except RuntimeError:
+            logger.exception(f"Couldn't push Sample to karton. Sample {sample.sha256}")
+
+    db.commit()
+
+    try:
+        sample_mime = get_magic(file.file, mimetype=True)
+        karton.push_file(file, sample_mime, sample.sha256)
+    except RuntimeError:
+        pass
+
+    return sample
+
+
+@router.post("/update", response_model=schemas.Sample)
+def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
+    sha256 = get_sha256(file.file)
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    if not sample:
+        sample = queries.sample.add_sample(db, file)
+
     if not sample.ssdeep:
         ssdeep = queries.ssdeep.add_ssdeep(db, file)
         queries.sample.add_ssdeep_to_sample(db, sample, ssdeep)

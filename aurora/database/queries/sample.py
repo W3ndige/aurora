@@ -52,12 +52,8 @@ def get_sample_related(db: Session, sample: models.Sample) -> List[models.Sample
 
 
 def add_sample(db: Session, file: UploadFile) -> models.Sample:
-    sha256 = get_sha256(file.file)
-    sample = get_sample_by_sha256(db, sha256)
-
-    if not sample:
-        sample = models.Sample.from_uploadfile(file)
-        db.add(sample)
+    sample = models.Sample.from_uploadfile(file)
+    db.add(sample)
 
     return sample
 

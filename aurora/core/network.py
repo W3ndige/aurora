@@ -6,7 +6,7 @@ from aurora.database import models
 
 
 def create_network(relations: List[models.Relation]) -> Network:
-    network = Network()
+    network = Network(directed=True)
     network.barnes_hut()
 
     for relation in relations:
@@ -19,7 +19,7 @@ def create_network(relations: List[models.Relation]) -> Network:
         )
 
         network.add_edge(
-            relation.parent_id, relation.child_id, title=relation.relation_type.value
+            relation.parent_id, relation.child_id, title=f"{relation.relation_type.value}: {relation.confidence}"
         )
 
 

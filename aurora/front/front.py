@@ -57,7 +57,7 @@ def index(request: Request, sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     sample_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    network = create_network(sample, sample_relations)
+    network = create_network(sample_relations)
 
     nodes, edges, heading, height, width, options = network.get_network_data()
 
@@ -65,6 +65,7 @@ def index(request: Request, sha256: str, db=Depends(get_db)):
         "network.html", {
             "request": request,
             "nodes": nodes,
-            "edges": edges
+            "edges": edges,
+            "options": options
         }
     )
