@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi import APIRouter, Request, Depends
 from starlette.templating import Jinja2Templates
 
-from aurora.core.network import create_network
+from aurora.core import network as net
 from aurora.database import get_db, queries, schemas, models
 
 templates = Jinja2Templates(directory="aurora/front/templates/")
@@ -35,9 +35,8 @@ def index(
         confidence=confidence
     )
 
-    relations = queries.relation.get_relations(db, filters)
-
-    network = create_network(relations)
+    relations = queries.relation.get_simplified_relations(db, filters)
+    network = net.create_simplified_graph(relations)
 
     nodes, edges, heading, height, width, options = network.get_network_data()
 
@@ -57,7 +56,7 @@ def index(request: Request, sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     sample_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    network = create_network(sample_relations)
+    network = net.create_network(sample_relations)
 
     nodes, edges, heading, height, width, options = network.get_network_data()
 

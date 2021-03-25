@@ -15,13 +15,9 @@
 
     var network = new vis.Network(container, data, options);
 
-    network.setOptions({edges: {arrows: {from: {enabled: false}, to: {enabled: false}}}})
-
-    network.on("stabilizationIterationsDone", function () {
-        network.setOptions( { physics: false } );
-    });
-
 
 </script>
 
 {% endblock %}
+
+

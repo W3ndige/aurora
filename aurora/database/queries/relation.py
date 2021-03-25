@@ -103,6 +103,40 @@ def get_relations_by_hash(
     return relations
 
 
+def get_samples_with_relation(
+        db: Session, filters: schemas.RelationFilter = None
+) -> List[models.Relation]:
+
+    query_filters = []
+    if filters:
+        if filters.relation_type:
+            query_filters.append(models.Relation.relation_type == filters.relation_type)
+        if filters.confidence:
+            query_filters.append(models.Relation.confidence >= filters.confidence)
+
+
+
+def get_simplified_relations(
+        db: Session, filters: schemas.RelationFilter = None
+) -> List[models.Relation]:
+
+    query_filters = []
+    if filters:
+        if filters.relation_type:
+            query_filters.append(models.Relation.relation_type == filters.relation_type)
+        if filters.confidence:
+            query_filters.append(models.Relation.confidence >= filters.confidence)
+
+    relations = (
+        db.query(models.Relation)
+        .distinct(models.Relation.parent_id, models.Relation.child_id)
+        .filter(*query_filters)
+        .all()
+    )
+
+    return relations
+
+
 def add_relation(
     db: Session,
     parent: models.Sample,

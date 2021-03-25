@@ -80,6 +80,8 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint("id"),
     )
+    op.create_index(op.f("ix_relation_parent_id"), "relation", ["parent_id"], unique=False)
+    op.create_index(op.f("ix_relation_child_id"), "relation", ["child_id"], unique=False)
     op.create_table(
         "ssdeep",
         sa.Column("id", sa.Integer(), nullable=False),

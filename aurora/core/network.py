@@ -28,3 +28,21 @@ def create_network(relations: List[models.Relation]) -> Network:
 
 
 
+def create_simplified_graph(relations: List[models.Relation]) -> Network:
+    network = Network()
+    network.barnes_hut()
+
+    for relation in relations:
+        network.add_node(
+            relation.parent_id
+        )
+
+        network.add_node(
+            relation.child_id
+        )
+
+        network.add_edge(
+            relation.parent_id, relation.child_id
+        )
+
+    return network

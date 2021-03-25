@@ -19,8 +19,8 @@ class Relation(Base):
     __tablename__ = "relation"
 
     id = sql.Column(sql.Integer, primary_key=True)
-    parent_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False)
-    child_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False)
+    parent_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False, index=True)
+    child_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"), nullable=False, index=True)
     relation_type = sql.Column(sql.Enum(RelationType), nullable=False)
     confidence = sql.Column(sql.Float, nullable=False)
 
