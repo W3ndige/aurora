@@ -9,7 +9,7 @@ from aurora.database import models, schemas
 logger = logging.getLogger(__name__)
 
 def get_relations(
-    db: Session, filters: schemas.RelationFilter = None
+    db: Session, filters: schemas.RelationFilter = None, offset: int = 0, limit: int = 50
 ) -> List[models.Relation]:
 
     query_filters = []
@@ -19,7 +19,7 @@ def get_relations(
         if filters.confidence:
             query_filters.append(models.Relation.confidence >= filters.confidence)
 
-    relations = db.query(models.Relation).filter(*query_filters).all()
+    relations = db.query(models.Relation).filter(*query_filters).offset(offset).limit(limit).all()
     return relations
 
 

@@ -121,13 +121,6 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
     queries.sample.add_minhash_to_sample(db, sample, new_minhash)
     db.commit()
 
-    try:
-        karton.push_minhash(
-            sha256, minhash.seed, minhash.hash_values, minhash.minhash_type
-        )
-    except RuntimeError:
-        logger.exception(f"Couldn't push Minhash to karton. Sample {sha256}")
-
     return new_minhash
 
 

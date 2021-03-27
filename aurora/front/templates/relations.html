@@ -1,0 +1,45 @@
+{% extends 'template.html' %}
+
+{% block content %}
+
+<div class="card-body">
+    <div class="row mt-3">
+            {% if offset > 0 %}
+              <a class="btn btn-secondary" href="?offset={{offset - 50}}">Previous</a>
+            {% endif %}
+            {% if relations | length == 50 %}
+              <a class="btn btn-primary" href="?offset={{offset + 50}}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-header">Relations</div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                        <th scope="col">Parent</th>
+                        <th scope="col">Child</th>
+                        <th scope="col">Relation Type</th>
+                        <th scope="col">Confidence</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for relation in relations %}
+                    <tr>
+                        <td><a href="/sample/{{ relation.parent.sha256 }}">{{relation.parent.sha256}}</a></td>
+                        <td><a href="/sample/{{ relation.child.sha256 }}">{{relation.child.sha256}}</a></td>
+                        <td> {{relation.relation_type.value}} </td>
+                        <td> {{relation.confidence}} </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

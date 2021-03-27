@@ -7,6 +7,23 @@
     <style>
         body {
             padding-top: 65px;
+            height: 100%;
+        }
+
+        .index_span {
+            display: block;
+        }
+
+        .hash_span {
+            word-break: break-all;
+        }
+
+        .data_table {
+            word-break: break-all;
+        }
+
+        .data_table th {
+            word-break: normal;
         }
     </style>
 </head>
@@ -17,6 +34,15 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav">
                     <li class="nav-item">
+                        <a class="nav-link" href="/relations">Relations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/network">Network</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/upload">Upload</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="/docs">API</a>
                     </li>
                 </ul>
@@ -24,7 +50,7 @@
         </div>
     </div>
 
-    <div class="container-fluid min-vh-100">
+    <div class="container-fluid vh-100">
         {% block content %}
         {% endblock %}
     </div>

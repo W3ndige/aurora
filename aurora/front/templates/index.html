@@ -2,32 +2,52 @@
 
 {% block content %}
 
- <div class="table-responsive">
-    {% if offset > 0 %}
-      <a class="btn btn-primary" href="/?offset={{offset - 50}}">Previous</a>
-    {% endif %}
-    {% if samples | length == 50 %}
-      <a class="btn btn-primary" href="/?offset={{offset + 50}}">Next</a>
-    {% endif %}
-    <table class="table table-hover">
-      <thead>
-        <tr>
-            <th scope="col">SHA256</th>
-            <th scope="col">Filetype</th>
-            <th scope="col">Filesize</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for sample in samples %}
-        <tr>
-            <td> {{sample.sha256}} </td>
-            <td> {{sample.filetype}} </td>
-            <td> {{sample.filesize}} </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+<div class="card-body">
+    <div class="row mt-3">
+        <div class="col-md">
+            {% if offset > 0 %}
+              <a class="btn btn-secondary" href="/?offset={{offset - 50}}">Previous</a>
+            {% endif %}
+            {% if samples | length == 50 %}
+              <a class="btn btn-primary" href="/?offset={{offset + 50}}">Next</a>
+            {% endif %}
+        </div>
+    </div>
 
+
+    <div class="row mt-3">
+        <div class="col-md">
+            <div class="card">
+                <div class="card-header">Samples</div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                        <th scope="col">
+                            MD5/SHA256/Filename
+                        </th>
+                        <th scope="col">Relation count</th>
+                        <th scope="col">Filesize</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for sample in samples %}
+                    <tr>
+                        <td>
+                            <span class="index_span">{{sample.md5}}</span>
+                            <span class="index_span"><a href="/sample/{{ sample.sha256 }}">{{sample.sha256}}</a></span>
+                            <span class="index_span">{{sample.filename}}</span>
+                        </td>
+                        {% set parents_length =  sample.parents | length %}
+                        {% set children_length =  sample.children | length %}
+                        <td> {{ parents_length | int + children_length | int }} </td>
+                        <td> {{sample.filesize}} </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+         </div>
+      </div>
+    </div>
+</div>
 
 {% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'template.html' %}
+
+{% block content %}
+
+<div class="card-body">
+    <div class="row mt-3">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">Sample information</div>
+                <div class="card-body p-0">
+                <table class="table data_table table-hover">
+                  <tbody>
+                    <tr>
+                        <th>MD5</th>
+                        <td class="hash_span">{{sample.md5}}</td>
+                    </tr>
+                    <tr>
+                        <th>SHA1</th>
+                        <td class="hash_span">{{sample.sha1}}</td>
+                    </tr>
+                    <tr>
+                        <th>SHA256</th>
+                        <td class="hash_span">{{sample.sha256}}</td>
+                    </tr>
+                    <tr>
+                        <th>SHA512</th>
+                        <td class="hash_span">{{sample.sha512}}</td>
+                    </tr>
+                    <tr>
+                        <th>SSDeep</th>
+                        <td>{{sample_ssdeep}}</td>
+                    </tr>
+                    <tr>
+                        <th>Filename</th>
+                        <td class="hash_span">{{sample.filename}}</td>
+
+                    </tr>
+                    <tr>
+                        <th>Filetype</th>
+                        <td class="hash_span">{{sample.filetype}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card h-100">
+                <div class="card-header">Network</div>
+                <div class="card-body h-100">
+                    <div id="network"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-3">
+        <div class="col-sm">
+            <div class="card">
+                <div class="card-header">Related samples ({{ related_samples | length }})</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                            <th scope="col">
+                                MD5/SHA256/Filename
+                            </th>
+                            <th scope="col">Filetype</th>
+                            <th scope="col">Filesize</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for related_sample in related_samples %}
+                        <tr>
+                            <td>
+                                <span class="index_span">{{related_sample.md5}}</span>
+                                <span class="index_span"><a href="/sample/{{ sample.sha256 }}">{{related_sample.sha256}}</a></span>
+                                <span class="index_span">{{related_sample.filename}}</span>
+                            </td>
+                            <td> {{related_sample.filetype}} </td>
+                            <td> {{related_sample.filesize}} </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script type="text/javascript">
+    var container = document.getElementById('network');
+    var data = {
+        nodes: {{ nodes | safe }},
+        edges: {{ edges | safe }}
+    };
+    var options = {{ options | safe}};
+
+    var network = new vis.Network(container, data, options);
+    network.fit()
+
+</script>
+
+
+{% endblock %}
