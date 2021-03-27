@@ -22,3 +22,58 @@ services:
     command: server /data
     volumes:
       - /tmp/minio:/data
+  karton-system:
+    image: certpl/karton-system:master
+    depends_on:
+      - redis
+      - minio
+    volumes:
+      - ./karton/karton.ini:/etc/karton/karton.ini
+    entrypoint: karton-system
+    command: --setup-bucket
+  karton-dashboard:
+    image: certpl/karton-dashboard:5caecf96d6363b13d37848cadcaab408d8b50565
+    depends_on:
+      - redis
+      - minio
+    volumes:
+      - ./kartons/karton.ini:/etc/karton/karton.ini
+    ports:
+      - "5000:5000"
+  minhash:
+    build:
+      context: ./kartons/
+      dockerfile: karton-minhash/Dockerfile
+    depends_on:
+      - redis
+      - minio
+  strings:
+    build:
+      context: ./kartons/
+      dockerfile: karton-strings/Dockerfile
+    depends_on:
+      - redis
+      - minio
+  r2disasm:
+    build:
+      context: ./kartons/
+      dockerfile: karton-r2disasm/Dockerfile
+    depends_on:
+      - redis
+      - minio
+  susstrings:
+    build:
+      context: ./kartons/
+      dockerfile: karton-susstrings/Dockerfile
+    depends_on:
+      - redis
+      - minio
+  similarity:
+    restart: on-failure
+    build:
+      context: ./kartons/
+      dockerfile: karton-similarity/Dockerfile
+    depends_on:
+      - aurora
+      - redis
+      - minio

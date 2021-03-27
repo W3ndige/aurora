@@ -35,7 +35,7 @@ def get_upload(request: Request):
 
 
 @router.post("/upload", response_class=HTMLResponse)
-def get_upload(request: Request, file: UploadFile = File(...), db=Depends(get_db)):
+def get_upload(file: UploadFile = File(...), db=Depends(get_db)):
     sha256 = get_sha256(file.file)
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:
