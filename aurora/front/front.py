@@ -73,7 +73,7 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
     nodes, edges, heading, height, width, options = network.get_network_data()
 
     return templates.TemplateResponse(
-        "sample.html", {
+        "sample/related.html", {
             "request": request,
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
@@ -88,12 +88,43 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
 @router.get("/sample/{sha256}/relations", response_class=HTMLResponse)
 def get_relations(request: Request, sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
-    sample_relations = queries.relation.get_relations_by_hash(db, sample)
+    relations = queries.relation.get_relations_by_hash(db, sample)
+    sample_ssdeep = sample.ssdeep.ssdeep
+
+    network = net.create_network(relations)
+    nodes, edges, heading, height, width, options = network.get_network_data()
 
     return templates.TemplateResponse(
-        "relations.html", {
+        "sample/relations.html", {
             "request": request,
-            "relations": sample_relations
+            "sample": sample,
+            "sample_ssdeep": sample_ssdeep,
+            "relations": relations,
+            "nodes": nodes,
+            "edges": edges,
+            "options": options
+        }
+    )
+
+@router.get("/sample/{sha256}/strings", response_class=HTMLResponse)
+def get_relations(request: Request, sha256: str, db=Depends(get_db)):
+    sample = queries.sample.get_sample_by_sha256(db, sha256)
+    relations = queries.relation.get_relations_by_hash(db, sample)
+    sample_ssdeep = sample.ssdeep.ssdeep
+    strings = sample.strings
+
+    network = net.create_network(relations)
+    nodes, edges, heading, height, width, options = network.get_network_data()
+
+    return templates.TemplateResponse(
+        "sample/strings.html", {
+            "request": request,
+            "sample": sample,
+            "sample_ssdeep": sample_ssdeep,
+            "strings": strings,
+            "nodes": nodes,
+            "edges": edges,
+            "options": options
         }
     )
 

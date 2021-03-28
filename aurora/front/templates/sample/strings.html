@@ -1,0 +1,24 @@
+{% extends 'sample.html' %}
+
+{% block sample_card %}
+
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+            <th scope="col">SHA256</th>
+            <th scope="col">Value</th>
+		</tr>
+	</thead>
+	<tbody>
+        {% for string in strings %}
+        <tr>
+            <td><a href="/string/{{ string.sha256 }}">{{string.sha256}}</a></td>
+            <td> {{string.value}} </td>
+        </tr>
+        {% endfor %}
+
+	</tbody>
+</table>
+
+{% endblock %}

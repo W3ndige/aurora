@@ -1,0 +1,28 @@
+{% extends 'sample.html' %}
+
+{% block sample_card %}
+
+
+<table class="table table-hover">
+	<thead>
+		<tr>
+            <th scope="col">Parent</th>
+            <th scope="col">Child</th>
+            <th scope="col">Relation Type</th>
+            <th scope="col">Confidence</th>
+		</tr>
+	</thead>
+	<tbody>
+        {% for relation in relations %}
+        <tr>
+            <td><a href="/sample/{{ relation.parent.sha256 }}">{{relation.parent.sha256}}</a></td>
+            <td><a href="/sample/{{ relation.child.sha256 }}">{{relation.child.sha256}}</a></td>
+            <td> {{relation.relation_type.value}} </td>
+            <td> {{relation.confidence}} </td>
+        </tr>
+        {% endfor %}
+
+	</tbody>
+</table>
+
+{% endblock %}

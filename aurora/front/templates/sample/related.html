@@ -1,0 +1,30 @@
+{% extends 'sample.html' %}
+
+{% block sample_card %}
+
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                            <th scope="col">
+                                MD5/SHA256/Filename
+                            </th>
+                            <th scope="col">Filetype</th>
+                            <th scope="col">Filesize</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for related_sample in related_samples %}
+                        <tr>
+                            <td>
+                                <span class="index_span">{{related_sample.md5}}</span>
+                                <span class="index_span"><a href="/sample/{{ sample.sha256 }}">{{related_sample.sha256}}</a></span>
+                                <span class="index_span">{{related_sample.filename}}</span>
+                            </td>
+                            <td> {{related_sample.filetype}} </td>
+                            <td> {{related_sample.filesize}} </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+
+{% endblock %}
