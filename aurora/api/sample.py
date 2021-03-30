@@ -118,7 +118,7 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
     new_minhash = queries.minhash.add_minhash(
         db, minhash.seed, minhash.hash_values, minhash.minhash_type
     )
-    queries.sample.add_minhash_to_sample(db, sample, new_minhash)
+    sample.minhashes.append(new_minhash)
     db.commit()
 
     return new_minhash

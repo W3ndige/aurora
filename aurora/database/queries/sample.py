@@ -4,22 +4,77 @@ from sqlalchemy.orm import Session
 from fastapi import UploadFile
 
 from aurora.database import models
-from aurora.core.utils import get_sha256
 
 
 def get_samples(db: Session, offset: int = 0, limit: int = 50) -> List[models.Sample]:
+
+    """Queries Sample objects from the database.
+
+    Returns a list of samples.
+
+    Args:
+        db (Session): Database session.
+        offset (int): Offset from which the query starts.
+        limit (int): Max number of relations returned in a single query.
+
+    Returns:
+        List(Relation) List of relations in a database.
+
+    """
+
+
     return db.query(models.Sample).offset(offset).limit(limit).all()
 
 
 def get_number_of_samples(db: Session) -> int:
+
+    """Returns a total number of samples.
+
+    Args:
+        db (Session): Database session.
+
+    Returns:
+        int Total number of samples in database.
+
+    """
+
     return db.query(models.Sample).count()
 
 
 def get_sample_by_sha256(db: Session, sha256: str) -> models.Sample:
+
+    """Returns a sample by the SHA256 hash.
+
+    Queries a sample which SHA256 hash is equal to the passed one.
+
+    Args:
+         db (Session): Database session.
+         sha256 (str): SHA256 hash of the sample.
+
+    Returns:
+        Sample Sample with the specified hash.
+
+    """
+
+
     return db.query(models.Sample).filter(models.Sample.sha256 == sha256).first()
 
 
 def get_sample_parents(db: Session, sample: models.Sample) -> List[models.Sample]:
+
+    """Returns parents of the sample.
+
+    Queries samples which child is the sample specified as argument.
+
+    Args:
+         db (Session): Database session.
+         sample (Sample): Sample whose parents are queried.
+
+    Returns:
+        List(Sample) List of parent samples related to the argument sample.
+
+    """
+
     return (
         db.query(models.Sample)
         .distinct()
@@ -29,6 +84,21 @@ def get_sample_parents(db: Session, sample: models.Sample) -> List[models.Sample
 
 
 def get_sample_children(db: Session, sample: models.Sample) -> List[models.Sample]:
+
+    """Returns children of the sample.
+
+    Queries samples which parent is the sample specified as argument.
+
+    Args:
+         db (Session): Database session.
+         sample (Sample): Sample whose children are queried.
+
+    Returns:
+        List(Sample) List of child samples related to the argument sample.
+
+    """
+
+
     return (
         db.query(models.Sample)
         .distinct()
@@ -38,6 +108,20 @@ def get_sample_children(db: Session, sample: models.Sample) -> List[models.Sampl
 
 
 def get_sample_related(db: Session, sample: models.Sample) -> List[models.Sample]:
+
+    """Returns related samples.
+
+    Returns both parent and children samples.
+
+    Args:
+         db (Session): Database session.
+         sample (Sample): Sample whose related samples are queried.
+
+    Returns:
+        List(Sample) List of related samples related to the argument sample.
+
+    """
+
     return (
         db.query(models.Sample)
         .distinct()
@@ -52,24 +136,40 @@ def get_sample_related(db: Session, sample: models.Sample) -> List[models.Sample
 
 
 def get_samples_with_string(db: Session, string: models.String) -> List[models.Sample]:
+
+    """Returns samples containing string.
+
+    Queries samples which contain string specified as argument..
+
+    Args:
+         db (Session): Database session.
+         string (String): String which queried samples have to contain..
+
+    Returns:
+        List(Sample) List of samples containing specified string.
+
+    """
+
     return db.query(models.Sample).filter(models.Sample.strings.any(models.String.sha256==string.sha256)).all()
 
 
 def add_sample(db: Session, file: UploadFile) -> models.Sample:
+
+    """Add sample.
+
+     Add new sample to the database.
+
+     Args:
+        db (Session): Database session.
+        file (UploadFile): Sample file.
+
+     Returns:
+         Sample Newly added sample.
+
+     """
+
     sample = models.Sample.from_uploadfile(file)
     db.add(sample)
 
     return sample
 
-
-def add_minhash_to_sample(
-    db: Session, sample: models.Sample, minhash: models.Minhash
-) -> None:
-
-    sample.minhashes.append(minhash)
-
-
-def add_ssdeep_to_sample(
-    db: Session, sample: models.Sample, ssdeep: models.SsDeep
-) -> None:
-    sample.ssdeep = ssdeep

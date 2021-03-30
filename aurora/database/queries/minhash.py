@@ -46,7 +46,6 @@ def get_sample_minhash(
 
     """
 
-
     return (
         db.query(models.Minhash)
         .filter(models.Minhash.sample_id == sample.id)
