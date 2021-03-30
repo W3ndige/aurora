@@ -2,15 +2,20 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-sm col-centered">
-        <form action="upload" method="post" enctype="multipart/form-data">
-          <div class="form-group">
-              <label for="uploadFile">Choose file:</label>
-              <input type="file" name="file" class="form-control-file" id="uploadFile">
-              <input type="submit" value="Upload" name="submit" class="btn btn-primary" onclick="sendUpload">
-          </div>
-        </form>
+<div class="card-body">
+    <div class="row">
+        <div class="col-sm col-centered">
+            <div class="card">
+                <div class="card-header">Upload file</div>
+                <form action="upload" method="post" enctype="multipart/form-data">
+                  <div class="form-group">
+                      <label for="uploadFile">Choose file:</label>
+                      <input type="file" name="file" class="form-control-file" id="uploadFile">
+                      <input type="submit" value="Upload" name="submit" class="btn btn-primary" onclick="sendUpload">
+                  </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

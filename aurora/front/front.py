@@ -153,7 +153,7 @@ def get_strings(request: Request, offset: int = 0, db=Depends(get_db)):
     strings = queries.string.get_unique_strings(db, offset=offset)
 
     return templates.TemplateResponse(
-        "strings.html", {
+        "string/strings.html", {
             "request": request,
             "offset": offset,
             "strings": strings
@@ -167,7 +167,7 @@ def get_strings(request: Request, sha256: str, db=Depends(get_db)):
     string_samples = queries.sample.get_samples_with_string(db, string)
 
     return templates.TemplateResponse(
-        "string.html", {
+        "string/index.html", {
             "request": request,
             "string": string,
             "related_samples": string_samples
