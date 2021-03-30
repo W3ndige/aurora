@@ -1,3 +1,9 @@
+"""Database models.
+
+This package contains database models.
+"""
+
+
 from aurora.database.models.sample import Sample
 from aurora.database.models.minhash import Minhash, MinhashType
 from aurora.database.models.relation import Relation, RelationType

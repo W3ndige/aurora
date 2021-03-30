@@ -1,3 +1,8 @@
+"""Models for storing Minhashes.
+
+This module describes a model for storing Minhash values.
+"""
+
 from __future__ import annotations
 
 import enum
@@ -11,11 +16,17 @@ from aurora.database import Base
 
 
 class MinhashType(str, enum.Enum):
+    """Available types of minhash.
+
+    Data type from which the minhash was calculated.
+    """
+
     STRINGS_MINHASH = "STRINGS_MINHASH"
     DISASM_MINHASH = "DISASM_MINHASH"
 
 
 class Minhash(Base):
+
     __tablename__ = "minhash"
 
     id = sql.Column(sql.Integer, primary_key=True)
