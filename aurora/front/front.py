@@ -148,6 +148,33 @@ def index(request: Request, sha256: str, db=Depends(get_db)):
         }
     )
 
+@router.get("/string", response_class=HTMLResponse)
+def get_strings(request: Request, offset: int = 0, db=Depends(get_db)):
+    strings = queries.string.get_unique_strings(db, offset=offset)
+
+    return templates.TemplateResponse(
+        "strings.html", {
+            "request": request,
+            "offset": offset,
+            "strings": strings
+        }
+    )
+
+
+@router.get("/string/{sha256}", response_class=HTMLResponse)
+def get_strings(request: Request, sha256: str, db=Depends(get_db)):
+    string = queries.string.get_string(db, sha256)
+    string_samples = queries.sample.get_samples_with_string(db, string)
+
+    return templates.TemplateResponse(
+        "string.html", {
+            "request": request,
+            "string": string,
+            "related_samples": string_samples
+        }
+    )
+
+
 @router.get("/relations", response_class=HTMLResponse)
 def get_relations(request: Request, offset: int = 0, db=Depends(get_db)):
     relations = queries.relation.get_relations(db, offset=offset)

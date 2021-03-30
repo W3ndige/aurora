@@ -101,6 +101,7 @@ def upgrade():
         sa.Column("sample_id", sa.Integer(), nullable=True),
         sa.Column("value", sa.String(), nullable=False),
         sa.Column("sha256", sa.String(length=64), nullable=False),
+        sa.Column("heuristic", sa.String(), nullable=False),
         sa.ForeignKeyConstraint(
             ["sample_id"],
             ["sample.id"],

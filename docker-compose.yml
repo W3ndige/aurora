@@ -28,7 +28,7 @@ services:
       - redis
       - minio
     volumes:
-      - ./karton/karton.ini:/etc/karton/karton.ini
+      - ./kartons/karton.ini:/etc/karton/karton.ini
     entrypoint: karton-system
     command: --setup-bucket
   karton-dashboard:

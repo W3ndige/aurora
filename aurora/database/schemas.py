@@ -76,6 +76,7 @@ class SsDeep(BaseModel):
 class InputString(BaseModel):
     value: str
     sha256: Optional[str]
+    heuristic: str
 
 
 class String(BaseModel):
@@ -83,6 +84,7 @@ class String(BaseModel):
     value: str
     sha256: str
     sample: Sample
+    heuristic: str
 
     class Config:
         orm_mode = True

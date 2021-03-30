@@ -151,7 +151,7 @@ def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    db_string = queries.string.add_string(db, string.value, string.sha256)
+    db_string = queries.string.add_string(db, string.value, string.sha256, string.heuristic)
 
     sample.strings.append(db_string)
     db.commit()

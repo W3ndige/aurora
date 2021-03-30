@@ -89,7 +89,7 @@ class Similarity(Karton):
         try:
             self.minhash_lsh_dict[minhash_type].insert(sha256, minhash)
         except ValueError as e:
-            self.logger.warning(f"Could not insert Minhash to LSH: {e}")
+            self.log.warning(f"Could not insert Minhash to LSH: {e}")
 
         lsh_sha256_list = self.minhash_lsh_dict[minhash_type].query(
             minhash

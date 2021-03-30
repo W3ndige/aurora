@@ -51,6 +51,10 @@ def get_sample_related(db: Session, sample: models.Sample) -> List[models.Sample
     )
 
 
+def get_samples_with_string(db: Session, string: models.String) -> List[models.Sample]:
+    return db.query(models.Sample).filter(models.Sample.strings.any(models.String.sha256==string.sha256)).all()
+
+
 def add_sample(db: Session, file: UploadFile) -> models.Sample:
     sample = models.Sample.from_uploadfile(file)
     db.add(sample)
