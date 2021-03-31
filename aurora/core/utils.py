@@ -5,8 +5,8 @@ This module exhibits functions for extracting hashes from the file stream.
 
 
 import os
-import magic
-import ssdeep
+import magic    # type: ignore
+import ssdeep   # type: ignore
 import hashlib
 
 from typing import IO

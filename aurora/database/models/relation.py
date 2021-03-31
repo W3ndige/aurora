@@ -3,10 +3,13 @@ from __future__ import annotations
 import enum
 import sqlalchemy as sql
 
+from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship, backref
 
 from aurora.database import Base
 
+if TYPE_CHECKING:
+    from aurora.database.models import Sample
 
 class RelationType(str, enum.Enum):
     STRINGS_MINHASH = "STRINGS_MINHASH"

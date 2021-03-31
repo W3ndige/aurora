@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import List
+import sqlalchemy as sql
+
 from fastapi import UploadFile
 from collections import namedtuple
+from typing import List, TYPE_CHECKING
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm.relationships import RelationshipProperty
 from sqlalchemy.ext.associationproxy import association_proxy
 
 from aurora.core import utils
@@ -13,21 +15,26 @@ from aurora.database.models.relation import Relation
 
 RelationInput = namedtuple("RelationInput", ["parent", "child", "type", "confidence"])
 
+if TYPE_CHECKING:
+    from aurora.database.models import Minhash
+    from aurora.database.models import String
+    from aurora.database.models import SsDeep
+
 
 class Sample(Base):
     __tablename__ = "sample"
 
-    id = Column(Integer, primary_key=True)
-    filename = Column(String, nullable=False)
-    filesize = Column(Integer, nullable=False)
-    filetype = Column(String, nullable=False)
-    md5 = Column(String(32), nullable=False, index=True)
-    sha1 = Column(String(40), nullable=False, index=True)
-    sha256 = Column(String(64), nullable=False, index=True, unique=True)
-    sha512 = Column(String(128), nullable=False, index=True)
+    id = sql.Column(sql.Integer, primary_key=True)
+    filename = sql.Column(sql.String, nullable=False)
+    filesize = sql.Column(sql.Integer, nullable=False)
+    filetype = sql.Column(sql.String, nullable=False)
+    md5 = sql.Column(sql.String(32), nullable=False, index=True)
+    sha1 = sql.Column(sql.String(40), nullable=False, index=True)
+    sha256 = sql.Column(sql.String(64), nullable=False, index=True, unique=True)
+    sha512 = sql.Column(sql.String(128), nullable=False, index=True)
 
-    minhashes = relationship("Minhash")
-    strings = relationship("String")
+    minhashes: RelationshipProperty[List[Minhash]] = relationship("Minhash")
+    strings: RelationshipProperty[List[String]] = relationship("String")
     ssdeep = relationship("SsDeep", uselist=False)
 
     children = association_proxy(

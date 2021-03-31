@@ -3,7 +3,7 @@ import starlette.status as status
 
 from typing import Optional
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi import APIRouter, Request, Depends, UploadFile, File
+from fastapi import APIRouter, Request, Depends, UploadFile, File, HTTPException
 from starlette.templating import Jinja2Templates
 
 from aurora.core import karton
@@ -34,7 +34,7 @@ def get_upload(request: Request):
 
 
 @router.post("/upload", response_class=HTMLResponse)
-def get_upload(file: UploadFile = File(...), db=Depends(get_db)):
+def post_upload(file: UploadFile = File(...), db=Depends(get_db)):
     sha256 = get_sha256(file.file)
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:
@@ -42,7 +42,7 @@ def get_upload(file: UploadFile = File(...), db=Depends(get_db)):
 
     if not sample.ssdeep:
         ssdeep = queries.ssdeep.add_ssdeep(db, file)
-        queries.sample.add_ssdeep_to_sample(db, sample, ssdeep)
+        sample.ssdeep = ssdeep
 
         try:
             karton.push_ssdeep(sample.sha256, ssdeep.chunksize, ssdeep.ssdeep)
@@ -63,6 +63,10 @@ def get_upload(file: UploadFile = File(...), db=Depends(get_db)):
 @router.get("/sample/{sha256}", response_class=HTMLResponse)
 def sample_index(request: Request, sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
     sample_ssdeep = sample.ssdeep.ssdeep
     related_samples = list(queries.sample.get_sample_related(db, sample))
 
@@ -86,8 +90,12 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
 
 
 @router.get("/sample/{sha256}/relations", response_class=HTMLResponse)
-def get_relations(request: Request, sha256: str, db=Depends(get_db)):
+def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
     relations = queries.relation.get_relations_by_hash(db, sample)
     sample_ssdeep = sample.ssdeep.ssdeep
 
@@ -109,8 +117,12 @@ def get_relations(request: Request, sha256: str, db=Depends(get_db)):
 
 
 @router.get("/sample/{sha256}/strings", response_class=HTMLResponse)
-def get_relations(request: Request, sha256: str, db=Depends(get_db)):
+def get_sample_strings(request: Request, sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
     relations = queries.relation.get_relations_by_hash(db, sample)
     sample_ssdeep = sample.ssdeep.ssdeep
     strings = sample.strings
@@ -133,9 +145,12 @@ def get_relations(request: Request, sha256: str, db=Depends(get_db)):
 
 
 @router.get("/sample/{sha256}/network", response_class=HTMLResponse)
-def index(request: Request, sha256: str, db=Depends(get_db)):
-
+def get_sample_network(request: Request, sha256: str, db=Depends(get_db)):
     sample = queries.sample.get_sample_by_sha256(db, sha256)
+
+    if not sample:
+        raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
+
     sample_relations = queries.relation.get_relations_by_hash(db, sample)
 
     network = net.create_network(sample_relations)
@@ -159,8 +174,12 @@ def get_strings(request: Request, offset: int = 0, db=Depends(get_db)):
 
 
 @router.get("/string/{sha256}", response_class=HTMLResponse)
-def get_strings(request: Request, sha256: str, db=Depends(get_db)):
+def get_string(request: Request, sha256: str, db=Depends(get_db)):
     string = queries.string.get_string(db, sha256)
+
+    if not string:
+        raise HTTPException(status_code=404, detail=f"String {sha256} not found.")
+
     string_samples = queries.sample.get_samples_with_string(db, string)
 
     return templates.TemplateResponse(
@@ -179,7 +198,7 @@ def get_relations(request: Request, offset: int = 0, db=Depends(get_db)):
 
 
 @router.get("/network", response_class=HTMLResponse)
-def index(
+def network(
     request: Request,
     relation_type: Optional[str] = None,
     confidence: Optional[str] = None,

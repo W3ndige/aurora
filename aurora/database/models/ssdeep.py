@@ -3,10 +3,14 @@ from __future__ import annotations
 import sqlalchemy as sql
 
 from fastapi import UploadFile
+from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship
 
 from aurora.core import utils
 from aurora.database import Base
+
+if TYPE_CHECKING:
+    from aurora.database.models import Sample
 
 
 class SsDeep(Base):
@@ -23,7 +27,7 @@ class SsDeep(Base):
     def from_uploadfile(file: UploadFile) -> SsDeep:
         ssdeep_hash = utils.get_ssdeep(file.file)
 
-        chunksize = ssdeep_hash.split(":")[0]
+        chunksize = int(ssdeep_hash.split(":")[0])
 
         ssdeep = SsDeep(chunksize=chunksize, ssdeep=ssdeep_hash)
 

@@ -29,8 +29,8 @@ def get_minhashes(
 
 
 def get_sample_minhash(
-    db: Session, sample: models.Sample, type: models.MinhashType
-) -> models.Minhash:
+    db: Session, sample: models.Sample, type: Optional[models.MinhashType]
+) -> List[models.Minhash]:
 
     """Queries Minhash objects tat belong to the passed sample.
 
@@ -45,11 +45,14 @@ def get_sample_minhash(
         List(Minhash) Returns a list of Minhash objects in the database.
 
     """
+    filters = []
+    if type:
+        filters.append(models.Minhash.minhash_type == type)
 
     return (
         db.query(models.Minhash)
         .filter(models.Minhash.sample_id == sample.id)
-        .filter(models.Minhash.minhash_type == type)
+        .filter(*filters)
         .all()
     )
 

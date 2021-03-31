@@ -1,7 +1,8 @@
-from typing import List
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from fastapi import UploadFile
+from typing import List, Optional
+
 
 from aurora.database import models
 
@@ -40,7 +41,7 @@ def get_number_of_samples(db: Session) -> int:
     return db.query(models.Sample).count()
 
 
-def get_sample_by_sha256(db: Session, sha256: str) -> models.Sample:
+def get_sample_by_sha256(db: Session, sha256: str) -> Optional[models.Sample]:
 
     """Returns a sample by the SHA256 hash.
 

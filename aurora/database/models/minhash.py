@@ -6,13 +6,17 @@ This module describes a model for storing Minhash values.
 from __future__ import annotations
 
 import enum
-import datasketch
 import sqlalchemy as sql
 
+from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
 from aurora.database import Base
+
+
+if TYPE_CHECKING:
+    from aurora.database.models import Sample
 
 
 class MinhashType(str, enum.Enum):
@@ -39,16 +43,3 @@ class Minhash(Base):
     sql.UniqueConstraint("sample_id", "analysis_type", name="unique_analysis_sample")
 
     sample = relationship("Sample", back_populates="minhashes")
-
-    def compare(self, other: Minhash) -> float:
-        if self.minhash_type != other.minhash_type:
-            return 0.0
-
-        self_minhash = datasketch.LeanMinHash(
-            seed=self.seed, hashvalues=self.hash_values
-        )
-        other_minhash = datasketch.LeanMinHash(
-            seed=other.seed, hashvalues=other.hash_values
-        )
-
-        return self_minhash.jaccard(other_minhash)

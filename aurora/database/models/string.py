@@ -1,9 +1,12 @@
 import sqlalchemy as sql
 
+from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship
 
 from aurora.database import Base
 
+if TYPE_CHECKING:
+    from aurora.database.models import Sample
 
 class String(Base):
     __tablename__ = "string"

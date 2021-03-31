@@ -52,7 +52,7 @@ def get_unique_strings(
     return strings
 
 
-def get_string(db: Session, sha256: str) -> models.String:
+def get_string(db: Session, sha256: str) -> Optional[models.String]:
 
     """Get string by SHA256 hash.
 

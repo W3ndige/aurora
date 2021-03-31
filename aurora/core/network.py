@@ -1,5 +1,5 @@
 from typing import List
-from pyvis.network import Network
+from pyvis.network import Network # type: ignore
 
 from aurora.database import models
 
@@ -24,7 +24,7 @@ def create_network(relations: List[models.Relation]) -> Network:
         network.add_edge(
             relation.parent_id,
             relation.child_id,
-            title=f"{relation.relation_type.value}: {relation.confidence}",
+            title=f"{relation.relation_type}: {relation.confidence}",
         )
 
     network.set_edge_smooth("dynamic")
