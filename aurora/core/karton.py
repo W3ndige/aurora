@@ -16,9 +16,9 @@ from fastapi import UploadFile
 from karton.core import Config, Producer, Task, Resource
 
 directory = os.path.dirname(__file__)
-os.path.join(directory, 'logger.conf')
+os.path.join(directory, "logger.conf")
 
-config = Config(os.path.join(directory, '../../karton.ini'))
+config = Config(os.path.join(directory, "../../karton.ini"))
 producer = Producer(config)
 
 
@@ -50,7 +50,9 @@ def push_file(file: UploadFile, mime: str, sha256: str) -> None:
     producer.send_task(task)
 
 
-def push_minhash(sha256: str, seed: int, hash_values: List[int], minhash_type: str) -> None:
+def push_minhash(
+    sha256: str, seed: int, hash_values: List[int], minhash_type: str
+) -> None:
     """Push minhash to the Karton pipeline.
 
     Creates a Karton task with the minhash contents as payload values.

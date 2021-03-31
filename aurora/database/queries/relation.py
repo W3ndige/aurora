@@ -8,8 +8,12 @@ from aurora.database import models, schemas
 
 logger = logging.getLogger(__name__)
 
+
 def get_relations(
-    db: Session, filters: Optional[schemas.RelationFilter] = None, offset: int = 0, limit: int = 50
+    db: Session,
+    filters: Optional[schemas.RelationFilter] = None,
+    offset: int = 0,
+    limit: int = 50,
 ) -> List[models.Relation]:
 
     """Queries Relation objects from the database.
@@ -34,27 +38,32 @@ def get_relations(
         if filters.confidence:
             query_filters.append(models.Relation.confidence >= filters.confidence)
 
-    relations = db.query(models.Relation).filter(*query_filters).offset(offset).limit(limit).all()
+    relations = (
+        db.query(models.Relation)
+        .filter(*query_filters)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
     return relations
 
 
 def get_confident_relation(db: Session) -> List[models.Relation]:
     relations_with_bigger_count = (
         db.query(models.Relation.parent_id, models.Relation.child_id)
-        .group_by(
-            models.Relation.parent_id,
-            models.Relation.child_id
-        )
+        .group_by(models.Relation.parent_id, models.Relation.child_id)
         .having(func.count(models.Relation.parent_id) >= 2)
         .subquery()
     )
 
     confident_relations = (
-        db.query(models.Relation).
-        filter(
-            tuple_(models.Relation.parent_id, models.Relation.child_id).
-                in_(relations_with_bigger_count)
-        ).all()
+        db.query(models.Relation)
+        .filter(
+            tuple_(models.Relation.parent_id, models.Relation.child_id).in_(
+                relations_with_bigger_count
+            )
+        )
+        .all()
     )
 
     return confident_relations
@@ -161,7 +170,7 @@ def get_relations_by_hash(
 
 
 def get_simplified_relations(
-        db: Session, filters: schemas.RelationFilter = None
+    db: Session, filters: schemas.RelationFilter = None
 ) -> List[models.Relation]:
 
     """Queries distinct Relation objects from the database.
@@ -204,21 +213,20 @@ def add_relation(
 
     """Add relation.
 
-     Add new relation to the database.
+    Add new relation to the database.
 
-     Args:
-         db (Session): Database session.
-        parent (Sample): Parent sample of the relation.
-        child (Sample): Child sample of the relation.
-        rel_type (str): Relation type.
-        confidence (float): Float value describing confidence in relationship.
-                            Value is mostly the same as similarity coefficient.
+    Args:
+        db (Session): Database session.
+       parent (Sample): Parent sample of the relation.
+       child (Sample): Child sample of the relation.
+       rel_type (str): Relation type.
+       confidence (float): Float value describing confidence in relationship.
+                           Value is mostly the same as similarity coefficient.
 
-     Returns:
-         Relation Newly added relation.
+    Returns:
+        Relation Newly added relation.
 
-     """
-
+    """
 
     relation = models.Relation(
         parent=parent, child=child, relation_type=rel_type, confidence=confidence

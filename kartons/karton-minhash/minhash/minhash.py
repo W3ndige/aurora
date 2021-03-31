@@ -4,18 +4,21 @@ import datasketch
 from typing import Dict, List
 from karton.core import Karton, Task, Config
 
+
 def post_minhash_to_sample(url: str, sha256: str, minhash_input=Dict) -> Dict:
     r = requests.post(f"{url}/sample/{sha256}/minhash", json=minhash_input)
 
     return r.json()
 
+
 def extract_ngrams(data: List[any], n: int = 4):
     output = []
 
     for i in range(len(data) - n - 1):
-        output.append(" ".join(data[i:i+n]))
+        output.append(" ".join(data[i : i + n]))
 
     return output
+
 
 class AuroraConfig(Config):
     def __init__(self, path=None) -> None:
@@ -26,7 +29,6 @@ class AuroraConfig(Config):
 class Minhash(Karton):
     identity = "kartons.minhash"
     filters = [{"type": "feature"}]
-
 
     def process(self, task: Task) -> None:
         data = None
@@ -49,13 +51,17 @@ class Minhash(Karton):
                 "minhash_type": minhash_type,
             }
 
-            post_minhash_to_sample(self.config.aurora_config["url"], task.get_payload("sha256"), minhash_input)
+            post_minhash_to_sample(
+                self.config.aurora_config["url"],
+                task.get_payload("sha256"),
+                minhash_input,
+            )
 
             task = Task({"type": "feature", "kind": "minhash"})
 
             task.add_payload("sha256", sha256)
             task.add_payload("seed", lean_minhash.seed)
-            task.add_payload("hash_values",  lean_minhash.hashvalues.tolist())
+            task.add_payload("hash_values", lean_minhash.hashvalues.tolist())
             task.add_payload("minhash_type", minhash_type)
 
             self.send_task(task)

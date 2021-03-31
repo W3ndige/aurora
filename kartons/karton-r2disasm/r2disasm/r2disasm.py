@@ -3,6 +3,7 @@ import r2pipe
 
 from karton.core import Karton, Task
 
+
 class R2Disasm(Karton):
     identity = "kartons.r2disasm"
     filters = [{"type": "sample"}]
@@ -39,5 +40,3 @@ class R2Disasm(Karton):
             task.add_payload("sha256", sample.sha256)
 
             self.send_task(task)
-
-

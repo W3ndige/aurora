@@ -7,7 +7,7 @@ from karton.core import Karton, Task, Config
 
 
 def get_minhash_types(url: str) -> List[str]:
-    r =  requests.get(f"{url}/minhash/types")
+    r = requests.get(f"{url}/minhash/types")
     return r.json()
 
 
@@ -46,6 +46,7 @@ def post_relation(
 
     return r.json()
 
+
 class AuroraConfig(Config):
     def __init__(self, path=None) -> None:
         super().__init__(path)
@@ -67,9 +68,9 @@ class Similarity(Karton):
                 num_perm=256,
                 storage_config={
                     "type": "redis",
-                    "basename": minhash_type.encode('UTF-8'),
-                    "redis": {"host": "redis", "port": 6379}
-                }
+                    "basename": minhash_type.encode("UTF-8"),
+                    "redis": {"host": "redis", "port": 6379},
+                },
             )
 
     def process(self, task: Task) -> None:
@@ -91,16 +92,16 @@ class Similarity(Karton):
         except ValueError as e:
             self.log.warning(f"Could not insert Minhash to LSH: {e}")
 
-        lsh_sha256_list = self.minhash_lsh_dict[minhash_type].query(
-            minhash
-        )
+        lsh_sha256_list = self.minhash_lsh_dict[minhash_type].query(minhash)
 
         for sample_sha256 in lsh_sha256_list:
 
             if sample_sha256 == sha256:
                 continue
 
-            db_minhash = get_sample_minhash(self.config.aurora_config["url"], sample_sha256, minhash_type)[0]
+            db_minhash = get_sample_minhash(
+                self.config.aurora_config["url"], sample_sha256, minhash_type
+            )[0]
 
             db_lean_minhash = datasketch.LeanMinHash(
                 seed=db_minhash["seed"], hashvalues=db_minhash["hash_values"]
@@ -109,7 +110,11 @@ class Similarity(Karton):
             jaccard_coefficient = minhash.jaccard(db_lean_minhash)
             if jaccard_coefficient > 0.5:
                 post_relation(
-                    self.config.aurora_config["url"], sha256, db_minhash["sample"]["sha256"], minhash_type, jaccard_coefficient
+                    self.config.aurora_config["url"],
+                    sha256,
+                    db_minhash["sample"]["sha256"],
+                    minhash_type,
+                    jaccard_coefficient,
                 )
 
     def process_ssdeep(self, task: Task) -> None:
@@ -117,7 +122,9 @@ class Similarity(Karton):
         chunksize = task.get_payload("chunksize")
         ssdeep_hash = task.get_payload("ssdeep")
 
-        ssdeep_data_list = get_ssdeep_hashes(self.config.aurora_config["url"], chunksize)
+        ssdeep_data_list = get_ssdeep_hashes(
+            self.config.aurora_config["url"], chunksize
+        )
 
         for ssdeep_data in ssdeep_data_list:
             if ssdeep_data["sample"]["sha256"] == sha256:
@@ -128,4 +135,10 @@ class Similarity(Karton):
             )
 
             if ssdeep_coefficient > 0.5:
-                post_relation(self.config.aurora_config["url"], sha256, ssdeep_data["sample"]["sha256"], "SSDEEP", ssdeep_coefficient)
+                post_relation(
+                    self.config.aurora_config["url"],
+                    sha256,
+                    ssdeep_data["sample"]["sha256"],
+                    "SSDEEP",
+                    ssdeep_coefficient,
+                )

@@ -62,7 +62,13 @@ def upgrade():
         sa.Column("child_id", sa.Integer(), nullable=False),
         sa.Column(
             "relation_type",
-            sa.Enum("STRINGS_MINHASH", "DISASM_MINHASH", "STRING", "SSDEEP", name="relationtype"),
+            sa.Enum(
+                "STRINGS_MINHASH",
+                "DISASM_MINHASH",
+                "STRING",
+                "SSDEEP",
+                name="relationtype",
+            ),
             nullable=False,
         ),
         sa.Column(
@@ -80,8 +86,12 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint("id"),
     )
-    op.create_index(op.f("ix_relation_parent_id"), "relation", ["parent_id"], unique=False)
-    op.create_index(op.f("ix_relation_child_id"), "relation", ["child_id"], unique=False)
+    op.create_index(
+        op.f("ix_relation_parent_id"), "relation", ["parent_id"], unique=False
+    )
+    op.create_index(
+        op.f("ix_relation_child_id"), "relation", ["child_id"], unique=False
+    )
     op.create_table(
         "ssdeep",
         sa.Column("id", sa.Integer(), nullable=False),

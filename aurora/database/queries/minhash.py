@@ -29,7 +29,7 @@ def get_minhashes(
 
 
 def get_sample_minhash(
-        db: Session, sample: models.Sample, type: models.MinhashType
+    db: Session, sample: models.Sample, type: models.MinhashType
 ) -> models.Minhash:
 
     """Queries Minhash objects tat belong to the passed sample.
@@ -76,7 +76,6 @@ def add_minhash(
         Minhash Returns created minhash object..
 
     """
-
 
     minhash_model = models.Minhash(
         seed=seed,

@@ -24,7 +24,9 @@ def get_strings(db: Session, offset: int = 0, limit: int = 50) -> List[models.St
     return strings
 
 
-def get_unique_strings(db: Session, offset: int = 0, limit: int = 50) -> List[models.String]:
+def get_unique_strings(
+    db: Session, offset: int = 0, limit: int = 50
+) -> List[models.String]:
 
     """Get unique strings.
 
@@ -40,7 +42,13 @@ def get_unique_strings(db: Session, offset: int = 0, limit: int = 50) -> List[mo
 
     """
 
-    strings = db.query(models.String).distinct(models.String.sha256).offset(offset).limit(limit).all()
+    strings = (
+        db.query(models.String)
+        .distinct(models.String.sha256)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
     return strings
 
 
@@ -68,18 +76,18 @@ def add_string(db: Session, value: str, sha256: str, heuristic: str) -> models.S
 
     """Add string.
 
-     Add new string to the database.
+    Add new string to the database.
 
-     Args:
-        db (Session): Database session.
-        value (str): Value of the string.
-        sha256 (str): SHA256 hash of the string.
-        heuristic (str): Heuristic name from which the string was recovered.
+    Args:
+       db (Session): Database session.
+       value (str): Value of the string.
+       sha256 (str): SHA256 hash of the string.
+       heuristic (str): Heuristic name from which the string was recovered.
 
-     Returns:
-         String Newly added string.
+    Returns:
+        String Newly added string.
 
-     """
+    """
 
     string = models.String(value=value, sha256=sha256, heuristic=heuristic)
 

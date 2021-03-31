@@ -27,11 +27,10 @@ def index(request: Request, offset: int = 0, db=Depends(get_db)):
         "index.html", {"request": request, "samples": samples, "offset": offset}
     )
 
+
 @router.get("/upload", response_class=HTMLResponse)
 def get_upload(request: Request):
-    return templates.TemplateResponse(
-        "upload.html", {"request": request}
-    )
+    return templates.TemplateResponse("upload.html", {"request": request})
 
 
 @router.post("/upload", response_class=HTMLResponse)
@@ -73,15 +72,16 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
     nodes, edges, heading, height, width, options = network.get_network_data()
 
     return templates.TemplateResponse(
-        "sample/related.html", {
+        "sample/related.html",
+        {
             "request": request,
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "related_samples": related_samples,
             "nodes": nodes,
             "edges": edges,
-            "options": options
-        }
+            "options": options,
+        },
     )
 
 
@@ -95,16 +95,18 @@ def get_relations(request: Request, sha256: str, db=Depends(get_db)):
     nodes, edges, heading, height, width, options = network.get_network_data()
 
     return templates.TemplateResponse(
-        "sample/relations.html", {
+        "sample/relations.html",
+        {
             "request": request,
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "relations": relations,
             "nodes": nodes,
             "edges": edges,
-            "options": options
-        }
+            "options": options,
+        },
     )
+
 
 @router.get("/sample/{sha256}/strings", response_class=HTMLResponse)
 def get_relations(request: Request, sha256: str, db=Depends(get_db)):
@@ -117,15 +119,16 @@ def get_relations(request: Request, sha256: str, db=Depends(get_db)):
     nodes, edges, heading, height, width, options = network.get_network_data()
 
     return templates.TemplateResponse(
-        "sample/strings.html", {
+        "sample/strings.html",
+        {
             "request": request,
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "strings": strings,
             "nodes": nodes,
             "edges": edges,
-            "options": options
-        }
+            "options": options,
+        },
     )
 
 
@@ -140,24 +143,18 @@ def index(request: Request, sha256: str, db=Depends(get_db)):
     nodes, edges, heading, height, width, options = network.get_network_data()
 
     return templates.TemplateResponse(
-        "network.html", {
-            "request": request,
-            "nodes": nodes,
-            "edges": edges,
-            "options": options
-        }
+        "network.html",
+        {"request": request, "nodes": nodes, "edges": edges, "options": options},
     )
+
 
 @router.get("/string", response_class=HTMLResponse)
 def get_strings(request: Request, offset: int = 0, db=Depends(get_db)):
     strings = queries.string.get_unique_strings(db, offset=offset)
 
     return templates.TemplateResponse(
-        "string/strings.html", {
-            "request": request,
-            "offset": offset,
-            "strings": strings
-        }
+        "string/strings.html",
+        {"request": request, "offset": offset, "strings": strings},
     )
 
 
@@ -167,11 +164,8 @@ def get_strings(request: Request, sha256: str, db=Depends(get_db)):
     string_samples = queries.sample.get_samples_with_string(db, string)
 
     return templates.TemplateResponse(
-        "string/index.html", {
-            "request": request,
-            "string": string,
-            "related_samples": string_samples
-        }
+        "string/index.html",
+        {"request": request, "string": string, "related_samples": string_samples},
     )
 
 
@@ -180,27 +174,21 @@ def get_relations(request: Request, offset: int = 0, db=Depends(get_db)):
     relations = queries.relation.get_relations(db, offset=offset)
 
     return templates.TemplateResponse(
-        "relations.html", {
-            "request": request,
-            "offset": offset,
-            "relations": relations
-        }
+        "relations.html", {"request": request, "offset": offset, "relations": relations}
     )
+
 
 @router.get("/network", response_class=HTMLResponse)
 def index(
     request: Request,
     relation_type: Optional[str] = None,
     confidence: Optional[str] = None,
-    db=Depends(get_db)
+    db=Depends(get_db),
 ):
     if relation_type:
         relation_type = models.RelationType[relation_type]
 
-    filters = schemas.RelationFilter(
-        relation_type=relation_type,
-        confidence=confidence
-    )
+    filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 
     relations = queries.relation.get_simplified_relations(db, filters)
     network = net.create_simplified_graph(relations)
@@ -208,10 +196,6 @@ def index(
     nodes, edges, heading, height, width, options = network.get_network_data()
 
     return templates.TemplateResponse(
-        "network.html", {
-            "request": request,
-            "nodes": nodes,
-            "edges": edges,
-            "options": options
-        }
+        "network.html",
+        {"request": request, "nodes": nodes, "edges": edges, "options": options},
     )

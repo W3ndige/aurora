@@ -93,10 +93,7 @@ def reanalyze(sha256: str, db=Depends(get_db)):
     if sample.minhashes:
         for minhash in sample.minhashes:
             karton.push_minhash(
-                sha256,
-                minhash.seed,
-                minhash.hash_values,
-                minhash.minhash_type
+                sha256, minhash.seed, minhash.hash_values, minhash.minhash_type
             )
 
     if sample.ssdeep:
@@ -151,7 +148,9 @@ def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    db_string = queries.string.add_string(db, string.value, string.sha256, string.heuristic)
+    db_string = queries.string.add_string(
+        db, string.value, string.sha256, string.heuristic
+    )
 
     sample.strings.append(db_string)
     db.commit()

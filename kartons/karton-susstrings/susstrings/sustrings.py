@@ -10,7 +10,6 @@ SUS_KEYWORDS = [
     r".*pdb$",
     r"(Mozilla)\/[0-9]\.[0.9].*",
     r"http://.*",
-
 ]
 
 HEURISTICS = {
@@ -32,10 +31,10 @@ def post_string_to_sample(url: str, sha256: str, string_input=Dict) -> Dict:
 
     return r.json()
 
+
 class SusStrings(Karton):
     identity = "kartons.susstrings"
     filters = [{"type": "feature", "kind": "strings"}]
-
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -57,7 +56,16 @@ class SusStrings(Karton):
             for heuristic_name in self.compiled_heuristics.keys():
                 for heuristic in self.compiled_heuristics[heuristic_name]:
                     if re.match(heuristic, string):
-                        string_hash = hashlib.sha256(bytes(string, encoding="UTF-8")).hexdigest()
+                        string_hash = hashlib.sha256(
+                            bytes(string, encoding="UTF-8")
+                        ).hexdigest()
 
-                        post_string_to_sample(self.config.aurora_config["url"], sha256,
-                                              {"value": string, "sha256": string_hash, "heuristic": heuristic_name})
+                        post_string_to_sample(
+                            self.config.aurora_config["url"],
+                            sha256,
+                            {
+                                "value": string,
+                                "sha256": string_hash,
+                                "heuristic": heuristic_name,
+                            },
+                        )

@@ -22,7 +22,6 @@ def get_samples(db: Session, offset: int = 0, limit: int = 50) -> List[models.Sa
 
     """
 
-
     return db.query(models.Sample).offset(offset).limit(limit).all()
 
 
@@ -55,7 +54,6 @@ def get_sample_by_sha256(db: Session, sha256: str) -> models.Sample:
         Sample Sample with the specified hash.
 
     """
-
 
     return db.query(models.Sample).filter(models.Sample.sha256 == sha256).first()
 
@@ -97,7 +95,6 @@ def get_sample_children(db: Session, sample: models.Sample) -> List[models.Sampl
         List(Sample) List of child samples related to the argument sample.
 
     """
-
 
     return (
         db.query(models.Sample)
@@ -150,26 +147,29 @@ def get_samples_with_string(db: Session, string: models.String) -> List[models.S
 
     """
 
-    return db.query(models.Sample).filter(models.Sample.strings.any(models.String.sha256==string.sha256)).all()
+    return (
+        db.query(models.Sample)
+        .filter(models.Sample.strings.any(models.String.sha256 == string.sha256))
+        .all()
+    )
 
 
 def add_sample(db: Session, file: UploadFile) -> models.Sample:
 
     """Add sample.
 
-     Add new sample to the database.
+    Add new sample to the database.
 
-     Args:
-        db (Session): Database session.
-        file (UploadFile): Sample file.
+    Args:
+       db (Session): Database session.
+       file (UploadFile): Sample file.
 
-     Returns:
-         Sample Newly added sample.
+    Returns:
+        Sample Newly added sample.
 
-     """
+    """
 
     sample = models.Sample.from_uploadfile(file)
     db.add(sample)
 
     return sample
-

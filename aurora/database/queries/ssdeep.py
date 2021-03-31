@@ -35,17 +35,16 @@ def add_ssdeep(db: Session, file: UploadFile) -> models.SsDeep:
 
     """Add ssdeep.
 
-     Add new ssdeep hash to the database.
+    Add new ssdeep hash to the database.
 
-     Args:
-        db (Session): Database session.
-        file (UploadFile): Sample file from which ssdeep will be calculated.
+    Args:
+       db (Session): Database session.
+       file (UploadFile): Sample file from which ssdeep will be calculated.
 
-     Returns:
-         SsDeep Newly added ssdeep hash.
+    Returns:
+        SsDeep Newly added ssdeep hash.
 
-     """
-
+    """
 
     ssdeep = models.SsDeep.from_uploadfile(file)
 

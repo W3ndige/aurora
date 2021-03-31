@@ -15,10 +15,7 @@ def get_relations(
     confidence: Optional[float] = None,
     db=Depends(get_db),
 ):
-    filters = schemas.RelationFilter(
-        relation_type=relation_type,
-        confidence=confidence
-    )
+    filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 
     return queries.relation.get_relations(db, filters)
 
@@ -26,15 +23,22 @@ def get_relations(
 @router.post("/", response_model=schemas.Relation)
 def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
     if relation_input.confidence < 0 or relation_input.confidence > 1:
-        raise HTTPException(status_code=400, detail=f"Confidence must be >= 0 or <= 1. Got {relation_input.confidence}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Confidence must be >= 0 or <= 1. Got {relation_input.confidence}",
+        )
 
     parent = queries.sample.get_sample_by_sha256(db, relation_input.parent_sha256)
     child = queries.sample.get_sample_by_sha256(db, relation_input.child_sha256)
     if not parent:
-        raise HTTPException(status_code=404, detail=f"Parent {relation_input.parent_sha256} not found.")
+        raise HTTPException(
+            status_code=404, detail=f"Parent {relation_input.parent_sha256} not found."
+        )
 
     if not child:
-        raise HTTPException(status_code=404, detail=f"Child {relation_input.child_sha256} not found.")
+        raise HTTPException(
+            status_code=404, detail=f"Child {relation_input.child_sha256} not found."
+        )
 
     relation = queries.relation.add_relation(
         db, parent, child, relation_input.type, relation_input.confidence
@@ -49,13 +53,10 @@ def get_relations_by_parent(
     sha256: str,
     relation_type: Optional[models.RelationType] = None,
     confidence: Optional[float] = None,
-    db=Depends(get_db)
+    db=Depends(get_db),
 ):
 
-    filters = schemas.RelationFilter(
-        relation_type=relation_type,
-        confidence=confidence
-    )
+    filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 
     parent = queries.sample.get_sample_by_sha256(db, sha256)
     if not parent:
@@ -69,13 +70,10 @@ def get_relations_by_child(
     sha256: str,
     relation_type: Optional[models.RelationType] = None,
     confidence: Optional[float] = None,
-    db=Depends(get_db)
+    db=Depends(get_db),
 ):
 
-    filters = schemas.RelationFilter(
-        relation_type=relation_type,
-        confidence=confidence
-    )
+    filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 
     child = queries.sample.get_sample_by_sha256(db, sha256)
     if not child:
@@ -89,12 +87,9 @@ def get_relations_by_hash(
     sha256: str,
     relation_type: Optional[models.RelationType] = None,
     confidence: Optional[float] = None,
-    db=Depends(get_db)
+    db=Depends(get_db),
 ):
-    filters = schemas.RelationFilter(
-        relation_type=relation_type,
-        confidence=confidence
-    )
+    filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 
     sample = queries.sample.get_sample_by_sha256(db, sha256)
     if not sample:

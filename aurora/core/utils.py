@@ -25,13 +25,12 @@ def get_magic(stream: IO, mimetype: bool = False) -> str:
         str: Magic value of the passed stream.
     """
 
-
     stream.seek(0, os.SEEK_SET)
     return magic.from_buffer(stream.read(), mime=mimetype)
 
 
 def get_hash(stream: IO, hash_obj, digest_func) -> str:
-    """ Helper functions for calculating hash_obj digest based on passed parameters.
+    """Helper functions for calculating hash_obj digest based on passed parameters.
 
     Helper function that accepts hash object and digest function to calculate digest value of a stream.
 
@@ -52,7 +51,7 @@ def get_hash(stream: IO, hash_obj, digest_func) -> str:
 
 
 def get_md5(stream: IO) -> str:
-    """ Calculate MD5 hash of a stream.
+    """Calculate MD5 hash of a stream.
 
     Helper function that calculates the MD5 digest of a stream using `get_hash` helper function.
 
@@ -67,7 +66,7 @@ def get_md5(stream: IO) -> str:
 
 
 def get_sha1(stream: IO) -> str:
-    """ Calculate SHA1 hash of a stream.
+    """Calculate SHA1 hash of a stream.
 
     Helper function that calculates the SHA1 digest of a stream using `get_hash` helper function.
 
@@ -82,7 +81,7 @@ def get_sha1(stream: IO) -> str:
 
 
 def get_sha256(stream: IO) -> str:
-    """ Calculate SHA256 hash of a stream.
+    """Calculate SHA256 hash of a stream.
 
     Helper function that calculates the SHA256 digest of a stream using `get_hash` helper function.
 
@@ -97,7 +96,7 @@ def get_sha256(stream: IO) -> str:
 
 
 def get_sha512(stream: IO) -> str:
-    """ Calculate SHA512 hash of a stream.
+    """Calculate SHA512 hash of a stream.
 
     Helper function that calculates the SHA512 digest of a stream using `get_hash` helper function.
 
@@ -112,7 +111,7 @@ def get_sha512(stream: IO) -> str:
 
 
 def get_ssdeep(stream: IO) -> str:
-    """ Calculate SSDEEP hash of a stream.
+    """Calculate SSDEEP hash of a stream.
 
     Helper function that calculates the SSDEEP digest of a stream using `get_hash` helper function.
 
