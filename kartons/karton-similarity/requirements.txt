@@ -1,4 +1,0 @@
-karton-core==4.1.0
-requests==2.25.1
-datasketch[redis]==1.5.3
-ssdeep==3.4
