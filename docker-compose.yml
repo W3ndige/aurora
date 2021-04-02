@@ -28,7 +28,7 @@ services:
       - redis
       - minio
     volumes:
-      - ./kartons/karton.ini:/etc/karton/karton.ini
+      - ./karton.ini:/etc/karton/karton.ini
     entrypoint: karton-system
     command: --setup-bucket
   karton-dashboard:
@@ -37,43 +37,62 @@ services:
       - redis
       - minio
     volumes:
-      - ./kartons/karton.ini:/etc/karton/karton.ini
+      - ./karton.ini:/etc/karton/karton.ini
     ports:
       - "5000:5000"
-  minhash:
+  karton-classifier:
     build:
-      context: ./kartons/
-      dockerfile: karton-minhash/Dockerfile
+      context: ./kartons/karton-classifier/
+      dockerfile: Dockerfile
     depends_on:
       - redis
       - minio
-  strings:
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini
+  karton-minhash:
     build:
-      context: ./kartons/
-      dockerfile: karton-strings/Dockerfile
+      context: ./kartons/karton-minhash/
+      dockerfile: Dockerfile
     depends_on:
       - redis
       - minio
-  r2disasm:
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini
+  karton-r2disasm:
     build:
-      context: ./kartons/
-      dockerfile: karton-r2disasm/Dockerfile
+      context: ./kartons/karton-r2disasm
+      dockerfile: Dockerfile
     depends_on:
       - redis
       - minio
-  susstrings:
-    build:
-      context: ./kartons/
-      dockerfile: karton-susstrings/Dockerfile
-    depends_on:
-      - redis
-      - minio
-  similarity:
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini
+  karton-similarity:
     restart: on-failure
     build:
-      context: ./kartons/
-      dockerfile: karton-similarity/Dockerfile
+      context: ./kartons/karton-similarity/
+      dockerfile: Dockerfile
     depends_on:
       - aurora
       - redis
       - minio
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini
+  karton-strings-extractor:
+    build:
+      context: ./kartons/karton-strings-extractor/
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - minio
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini
+  karton-strings-scanner:
+    build:
+      context: ./kartons/karton-strings-scanner/
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - minio
+    volumes:
+      - ./karton.ini:/etc/karton/karton.ini
