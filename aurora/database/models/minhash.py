@@ -25,8 +25,8 @@ class MinhashType(str, enum.Enum):
     Data type from which the minhash was calculated.
     """
 
-    STRINGS_MINHASH = "STRINGS_MINHASH"
-    DISASM_MINHASH = "DISASM_MINHASH"
+    STRINGS = "STRINGS"
+    DISASM = "DISASM"
 
 
 class Minhash(Base):

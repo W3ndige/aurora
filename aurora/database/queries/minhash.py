@@ -66,7 +66,7 @@ def add_minhash(
 ) -> models.Minhash:
     """Creates a new Minhash object..
 
-    Creates ands add to databse a new minhash object using the passed parameters.
+    Creates and adds to databse a new minhash object using the passed parameters.
 
     Args:
         db (Session): Database session.

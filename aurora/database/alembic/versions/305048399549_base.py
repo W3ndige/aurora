@@ -42,7 +42,7 @@ def upgrade():
         sa.Column("hash_values", sa.ARRAY(sa.BIGINT()), nullable=False),
         sa.Column(
             "minhash_type",
-            sa.Enum("STRINGS_MINHASH", "DISASM_MINHASH", name="minhashtype"),
+            sa.Enum("STRINGS", "DISASM", name="minhashtype"),
             nullable=False,
         ),
         sa.Column("extra_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True),

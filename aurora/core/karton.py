@@ -22,14 +22,14 @@ config = Config(os.path.join(directory, "../../karton.ini"))
 producer = Producer(config)
 
 
-def push_file(file: UploadFile, mime: str, sha256: str) -> None:
+def push_file(file: UploadFile, magic: str, sha256: str) -> None:
     """Push file to the Karton pipeline.
 
     Creates a Karton task with the content of passed file as a Resource. Sends that task using Producer.
 
     Args:
         file (UploadFile): File to be uploaded to pipeline.
-        mime (str): Mimetype of the passed file, used to assign task to different kartons.
+        magic (str): Magic value of the passed file, used to assign task to different kartons.
         sha256 (str): SHA256 hash of the passed file.
 
     Returns:
@@ -43,9 +43,15 @@ def push_file(file: UploadFile, mime: str, sha256: str) -> None:
 
     resource = Resource(filename, content, sha256=sha256)
 
-    task = Task({"type": "sample", "kind": mime})
+    task = Task(
+        {
+            "type": "sample",
+            "kind": "raw"
+        }
+    )
 
     task.add_payload("sample", resource)
+    task.add_payload("magic", magic)
 
     producer.send_task(task)
 
@@ -93,7 +99,12 @@ def push_ssdeep(sha256: str, chunksize: int, ssdeep: str) -> None:
 
     """
 
-    task = Task({"type": "feature", "kind": "ssdeep"})
+    task = Task(
+        {
+            "type": "feature",
+            "stage": "ssdeep"
+        }
+    )
 
     task.add_payload("sha256", sha256)
     task.add_payload("chunksize", chunksize)
