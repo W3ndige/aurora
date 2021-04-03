@@ -6,7 +6,7 @@ from aurora.app import app
 from aurora.database import Base, get_db
 
 engine = create_engine(
-    "postgresql://postgres:postgres@localhost:5432/aurora_test"
+    "postgresql://postgres:postgres@postgres:5432/aurora_test"
 )
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
