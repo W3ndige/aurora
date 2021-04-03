@@ -1,1 +1,1 @@
-POSTGRES_URI = "postgres+psycopg2://postgres:postgres@postgres:5432/postgres"
+POSTGRES_URI = "postgresql://postgres:postgres@postgres:5432/aurora"

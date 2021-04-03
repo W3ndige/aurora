@@ -9,3 +9,6 @@ datasketch==1.5.3
 alembic==1.5.5
 jinja2==2.11.3
 pyvis==0.1.9
+
+# dev
+pytest==6.2.2
