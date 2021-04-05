@@ -1,0 +1,22 @@
+name: Linting
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - run: sudo apt-get install -y libfuzzy-dev libfuzzy2
+      - run: pip install black==20.8b1 flake8==3.9.0 mypy==0.812 sqlalchemy-stubs==0.4
+      - run: pip install -r requirements.txt
+      - run: black --check aurora/
+      - run: flake8 aurora/
+      - run: mypy aurora/

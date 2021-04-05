@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 from fastapi import APIRouter, Depends
 
 from aurora.database import get_db, queries, schemas

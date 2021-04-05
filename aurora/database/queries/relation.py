@@ -229,7 +229,7 @@ def add_relation(
     """
 
     relation = models.Relation(
-        parent=parent, child=child, relation_type=rel_type, confidence=confidence
+        parent=parent, child=child, relation_type=rel_type, confidence=confidence  # type: ignore
     )
 
     db.add(relation)

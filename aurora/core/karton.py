@@ -43,12 +43,7 @@ def push_file(file: UploadFile, magic: str, sha256: str) -> None:
 
     resource = Resource(filename, content, sha256=sha256)
 
-    task = Task(
-        {
-            "type": "sample",
-            "kind": "raw"
-        }
-    )
+    task = Task({"type": "sample", "kind": "raw"})
 
     task.add_payload("sample", resource)
     task.add_payload("magic", magic)
@@ -99,12 +94,7 @@ def push_ssdeep(sha256: str, chunksize: int, ssdeep: str) -> None:
 
     """
 
-    task = Task(
-        {
-            "type": "feature",
-            "stage": "ssdeep"
-        }
-    )
+    task = Task({"type": "feature", "stage": "ssdeep"})
 
     task.add_payload("sha256", sha256)
     task.add_payload("chunksize", chunksize)

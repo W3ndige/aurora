@@ -1,5 +1,5 @@
 from typing import List
-from pyvis.network import Network # type: ignore
+from pyvis.network import Network  # type: ignore
 
 from aurora.database import models
 

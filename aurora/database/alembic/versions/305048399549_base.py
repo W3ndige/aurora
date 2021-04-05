@@ -1,7 +1,7 @@
 """Base
 
 Revision ID: 305048399549
-Revises: 
+Revises:
 Create Date: 2021-03-15 19:04:04.143914
 
 """
