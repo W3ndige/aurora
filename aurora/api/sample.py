@@ -35,42 +35,14 @@ def add_sample(file: UploadFile = File(...), db=Depends(get_db)):
         try:
             karton.push_ssdeep(sample.sha256, ssdeep.chunksize, ssdeep.ssdeep)
         except RuntimeError:
-            logger.exception(f"Couldn't push Sample to karton. Sample {sample.sha256}")
+            logger.exception(f"Couldn't push ssdeep from {sample.sha256} to karton.")
 
     db.commit()
 
     try:
-        sample_mime = get_magic(file.file, mimetype=True)
-        karton.push_file(file, sample_mime, sample.sha256)
+        karton.push_file(file, sample.filetype, sample.sha256)
     except RuntimeError:
-        pass
-
-    return sample
-
-
-@router.post("/update", response_model=schemas.Sample)
-def update_sample(file: UploadFile = File(...), db=Depends(get_db)):
-    sha256 = get_sha256(file.file)
-    sample = queries.sample.get_sample_by_sha256(db, sha256)
-    if not sample:
-        sample = queries.sample.add_sample(db, file)
-
-    if not sample.ssdeep:
-        ssdeep = queries.ssdeep.add_ssdeep(db, file)
-        sample.ssdeep = ssdeep
-
-        try:
-            karton.push_ssdeep(sample.sha256, ssdeep.chunksize, ssdeep.ssdeep)
-        except RuntimeError:
-            logger.exception(f"Couldn't push Sample to karton. Sample {sample.sha256}")
-
-    db.commit()
-
-    try:
-        sample_mime = get_magic(file.file, mimetype=True)
-        karton.push_file(file, sample_mime, sample.sha256)
-    except RuntimeError:
-        pass
+        logger.exception(f"Couldn't push sample {sample.sha256} to karton")
 
     return sample
 
@@ -110,7 +82,10 @@ def add_minhash(sha256: str, minhash: schemas.InputMinhash, db=Depends(get_db)):
 
     if sample.minhashes:
         if any(x.minhash_type == minhash.minhash_type for x in sample.minhashes):
-            return None
+            raise HTTPException(
+                status_code=500,
+                detail=f"Sample {sha256} already contains {minhash.minhash_type} minhash.",
+            )
 
     new_minhash = queries.minhash.add_minhash(
         db, minhash.seed, minhash.hash_values, minhash.minhash_type
@@ -127,12 +102,8 @@ def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(ge
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    if minhash_type:
-        minhash_type = models.MinhashType[minhash_type]
-    else:
-        minhash_type = None
-
     return queries.minhash.get_sample_minhash(db, sample, minhash_type)
+
 
 
 @router.get("/{sha256}/ssdeep", response_model=schemas.SsDeep)
