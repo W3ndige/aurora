@@ -70,10 +70,30 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
     sample_ssdeep = sample.ssdeep.ssdeep
     related_samples = list(queries.sample.get_sample_related(db, sample))
 
-    sample_relations = queries.relation.get_relations_by_hash(db, sample)
+    db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    network = net.create_network(sample_relations)
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    nodes = {}
+    edges = []
+    for relation in db_relations:
+        nodes[relation.parent_id] = {
+            "id": relation.parent_id,
+            "label": relation.parent.filename,
+            "shape": "dot"
+        }
+
+        nodes[relation.child_id] = {
+            "id": relation.child_id,
+            "label": relation.child.filename,
+            "shape": "dot"
+        }
+
+        edges.append(
+            {
+                "from": relation.parent_id,
+                "to": relation.child_id,
+                "label": f"{relation.relation_type} : {relation.confidence}"
+            }
+        )
 
     return templates.TemplateResponse(
         "sample/related.html",
@@ -82,9 +102,8 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "related_samples": related_samples,
-            "nodes": nodes,
+            "nodes": list(nodes.values()),
             "edges": edges,
-            "options": options,
         },
     )
 
@@ -142,12 +161,33 @@ def get_sample_strings(request: Request, sha256: str, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    relations = queries.relation.get_relations_by_hash(db, sample)
     sample_ssdeep = sample.ssdeep.ssdeep
     strings = sample.strings
 
-    network = net.create_network(relations)
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    db_relations = queries.relation.get_relations_by_hash(db, sample)
+
+    nodes = {}
+    edges = []
+    for relation in db_relations:
+        nodes[relation.parent_id] = {
+            "id": relation.parent_id,
+            "label": relation.parent.filename,
+            "shape": "dot"
+        }
+
+        nodes[relation.child_id] = {
+            "id": relation.child_id,
+            "label": relation.child.filename,
+            "shape": "dot"
+        }
+
+        edges.append(
+            {
+                "from": relation.parent_id,
+                "to": relation.child_id,
+                "label": f"{relation.relation_type} : {relation.confidence}"
+            }
+        )
 
     return templates.TemplateResponse(
         "sample/strings.html",
@@ -156,9 +196,8 @@ def get_sample_strings(request: Request, sha256: str, db=Depends(get_db)):
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "strings": strings,
-            "nodes": nodes,
+            "nodes": list(nodes.values()),
             "edges": edges,
-            "options": options,
         },
     )
 
