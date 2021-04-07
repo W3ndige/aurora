@@ -209,12 +209,31 @@ def network(
 
     filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 
-    relations = queries.relation.get_simplified_relations(db, filters)
-    network = net.create_simplified_graph(relations)
+    db_relations = queries.relation.get_simplified_relations(db, filters)
 
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    nodes = {}
+    edges = []
+    for relation in db_relations:
+        nodes[relation.parent_id] = {
+            "id": relation.parent_id,
+            "label": relation.parent.filename,
+            "shape": "dot"
+        }
+
+        nodes[relation.child_id] = {
+            "id": relation.child_id,
+            "label": relation.child.filename,
+            "shape": "dot"
+        }
+
+        edges.append(
+            {
+                "from": relation.parent_id,
+                "to": relation.child_id,
+            }
+        )
 
     return templates.TemplateResponse(
         "network.html",
-        {"request": request, "nodes": nodes, "edges": edges, "options": options},
+        {"request": request, "nodes": list(nodes.values()), "edges": edges},
     )
