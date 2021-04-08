@@ -81,28 +81,7 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
 
     db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    nodes = {}
-    edges = []
-    for relation in db_relations:
-        nodes[relation.parent_id] = {
-            "id": relation.parent_id,
-            "label": relation.parent.filename,
-            "shape": "dot"
-        }
-
-        nodes[relation.child_id] = {
-            "id": relation.child_id,
-            "label": relation.child.filename,
-            "shape": "dot"
-        }
-
-        edges.append(
-            {
-                "from": relation.parent_id,
-                "to": relation.child_id,
-                "label": f"{relation.relation_type} : {relation.confidence}"
-            }
-        )
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
     return templates.TemplateResponse(
         "sample/related.html",
@@ -111,7 +90,7 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "related_samples": related_samples,
-            "nodes": list(nodes.values()),
+            "nodes": nodes,
             "edges": edges,
         },
     )
@@ -124,31 +103,10 @@ def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    db_relations = queries.relation.get_relations_by_hash(db, sample)
     sample_ssdeep = sample.ssdeep.ssdeep
+    db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    nodes = {}
-    edges = []
-    for relation in db_relations:
-        nodes[relation.parent_id] = {
-            "id": relation.parent_id,
-            "title": relation.parent.filename,
-            "shape": "dot"
-        }
-
-        nodes[relation.child_id] = {
-            "id": relation.child_id,
-            "title": relation.child.filename,
-            "shape": "dot"
-        }
-
-        edges.append(
-            {
-                "from": relation.parent_id,
-                "to": relation.child_id,
-                "title": f"{relation.relation_type} : {relation.confidence}"
-            }
-        )
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
     return templates.TemplateResponse(
         "sample/relations.html",
@@ -157,7 +115,7 @@ def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "relations": db_relations,
-            "nodes": list(nodes.values()),
+            "nodes": nodes,
             "edges": edges,
         }
     )
@@ -175,28 +133,7 @@ def get_sample_strings(request: Request, sha256: str, db=Depends(get_db)):
 
     db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    nodes = {}
-    edges = []
-    for relation in db_relations:
-        nodes[relation.parent_id] = {
-            "id": relation.parent_id,
-            "label": relation.parent.filename,
-            "shape": "dot"
-        }
-
-        nodes[relation.child_id] = {
-            "id": relation.child_id,
-            "label": relation.child.filename,
-            "shape": "dot"
-        }
-
-        edges.append(
-            {
-                "from": relation.parent_id,
-                "to": relation.child_id,
-                "label": f"{relation.relation_type} : {relation.confidence}"
-            }
-        )
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
     return templates.TemplateResponse(
         "sample/strings.html",
@@ -205,7 +142,7 @@ def get_sample_strings(request: Request, sha256: str, db=Depends(get_db)):
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
             "strings": strings,
-            "nodes": list(nodes.values()),
+            "nodes": nodes,
             "edges": edges,
         },
     )
@@ -220,32 +157,12 @@ def get_sample_network(request: Request, sha256: str, db=Depends(get_db)):
 
     db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    nodes = {}
-    edges = []
-    for relation in db_relations:
-        nodes[relation.parent_id] = {
-            "id": relation.parent_id,
-            "label": relation.parent.filename,
-            "shape": "dot"
-        }
-
-        nodes[relation.child_id] = {
-            "id": relation.child_id,
-            "label": relation.child.filename,
-            "shape": "dot"
-        }
-
-        edges.append(
-            {
-                "from": relation.parent_id,
-                "to": relation.child_id,
-            }
-        )
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
 
     return templates.TemplateResponse(
         "network.html",
-        {"request": request, "nodes": list(nodes.values()), "edges": edges},
+        {"request": request, "nodes": nodes, "edges": edges},
     )
 
 
@@ -297,29 +214,9 @@ def network(
 
     db_relations = queries.relation.get_simplified_relations(db, filters)
 
-    nodes = {}
-    edges = []
-    for relation in db_relations:
-        nodes[relation.parent_id] = {
-            "id": relation.parent_id,
-            "label": relation.parent.filename,
-            "shape": "dot"
-        }
-
-        nodes[relation.child_id] = {
-            "id": relation.child_id,
-            "label": relation.child.filename,
-            "shape": "dot"
-        }
-
-        edges.append(
-            {
-                "from": relation.parent_id,
-                "to": relation.child_id,
-            }
-        )
+    nodes, edges = net.prepare_large_graph(db_relations)
 
     return templates.TemplateResponse(
         "network.html",
-        {"request": request, "nodes": list(nodes.values()), "edges": edges},
+        {"request": request, "nodes": nodes.values(), "edges": edges},
     )

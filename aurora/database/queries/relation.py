@@ -1,7 +1,7 @@
 import logging
 
 from typing import List, Optional
-from sqlalchemy import func, tuple_
+from sqlalchemy import func, tuple_, or_
 from sqlalchemy.orm import Session
 
 from aurora.database import models, schemas
@@ -160,8 +160,10 @@ def get_relations_by_hash(
         db.query(models.Relation)
         .filter(*query_filters)
         .filter(
-            (models.Relation.parent_id == sample.id)
-            | (models.Relation.child_id == sample.id)
+            or_(
+                models.Relation.parent_id == sample.id,
+                models.Relation.child_id == sample.id
+            )
         )
         .all()
     )

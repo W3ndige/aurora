@@ -1,45 +1,56 @@
-from typing import List
+from typing import List, Tuple
 from pyvis.network import Network  # type: ignore
 
 from aurora.database import models
 
 
-def create_network(relations: List[models.Relation]) -> Network:
-    network = Network(directed=True)
-    network.barnes_hut()
-
+def prepare_large_graph(relations: List[models.Relation]) -> Tuple[List, List]:
+    nodes = {}
+    edges = []
     for relation in relations:
-        network.add_node(
-            relation.parent_id,
-            label=relation.parent.sha256,
-            title=relation.parent.filename,
+        nodes[relation.parent_id] = {
+            "id": relation.parent_id,
+            "label": relation.parent.filename,
+            "shape": "dot"
+        }
+
+        nodes[relation.child_id] = {
+            "id": relation.child_id,
+            "label": relation.child.filename,
+            "shape": "dot"
+        }
+
+        edges.append(
+            {
+                "from": relation.parent_id,
+                "to": relation.child_id,
+            }
         )
 
-        network.add_node(
-            relation.child_id,
-            label=relation.child.sha256,
-            title=relation.child.filename,
-        )
-
-        network.add_edge(
-            relation.parent_id,
-            relation.child_id,
-            title=f"{relation.relation_type}: {relation.confidence}",
-        )
-
-    network.set_edge_smooth("dynamic")
-    return network
+    return (list(nodes.values()), edges)
 
 
-def create_simplified_graph(relations: List[models.Relation]) -> Network:
-    network = Network()
-    network.barnes_hut()
-
+def prepare_sample_graph(relations: List[models.Relation]) -> Tuple[List, List]:
+    nodes = {}
+    edges = []
     for relation in relations:
-        network.add_node(relation.parent_id)
+        nodes[relation.parent_id] = {
+            "id": relation.parent_id,
+            "label": relation.parent.filename,
+            "shape": "dot"
+        }
 
-        network.add_node(relation.child_id)
+        nodes[relation.child_id] = {
+            "id": relation.child_id,
+            "label": relation.child.filename,
+            "shape": "dot"
+        }
 
-        network.add_edge(relation.parent_id, relation.child_id)
+        edges.append(
+            {
+                "from": relation.parent_id,
+                "to": relation.child_id,
+            }
+        )
 
-    return network
+    return (list(nodes.values()), edges)
