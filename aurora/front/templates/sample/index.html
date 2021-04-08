@@ -128,7 +128,9 @@
     };
 
     var network = new vis.Network(container, data, options);
-    network.fit()
+    network.once('afterDrawing', () => {
+      container.style.height = '40vh'
+    })
 
 </script>
 

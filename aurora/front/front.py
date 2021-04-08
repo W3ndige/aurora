@@ -23,8 +23,17 @@ logger = logging.getLogger(__name__)
 def index(request: Request, offset: int = 0, db=Depends(get_db)):
     samples = queries.sample.get_samples(db, offset=offset)
 
+    samples_with_info = []
+    for sample in samples:
+        samples_with_info.append(
+            {
+                "sample": sample,
+                "rel_size": len(queries.sample.get_sample_related(db, sample))
+            }
+        )
+
     return templates.TemplateResponse(
-        "index.html", {"request": request, "samples": samples, "offset": offset}
+        "index.html", {"request": request, "samples_with_info": samples_with_info, "offset": offset}
     )
 
 
@@ -123,13 +132,13 @@ def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
     for relation in db_relations:
         nodes[relation.parent_id] = {
             "id": relation.parent_id,
-            "label": relation.parent.filename,
+            "title": relation.parent.filename,
             "shape": "dot"
         }
 
         nodes[relation.child_id] = {
             "id": relation.child_id,
-            "label": relation.child.filename,
+            "title": relation.child.filename,
             "shape": "dot"
         }
 
@@ -137,7 +146,7 @@ def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
             {
                 "from": relation.parent_id,
                 "to": relation.child_id,
-                "label": f"{relation.relation_type} : {relation.confidence}"
+                "title": f"{relation.relation_type} : {relation.confidence}"
             }
         )
 
