@@ -60,6 +60,31 @@
 
     var network = new vis.Network(container, data, options);
 
+    network.on("selectNode", function (params) {
+        if (params.nodes.length == 1) {
+            if (network.isCluster(params.nodes[0]) == true) {
+                network.openCluster(params.nodes[0]);
+            }
+        }
+    });
+
+    network.once("beforeDrawing", function() {
+        var clusterOptionsByData = {
+          processProperties: function (clusterOptions, childNodes) {
+            clusterOptions.label = "[" + childNodes.length + "]";
+            return clusterOptions;
+          },
+          clusterNodeProperties: function (clusterOptions, childNodes) {
+            clusterOptions.borderWidth = 3;
+            clusterOptions.shape = "box";
+            clusterOptions.font = { size: 30 * childNodes.length };
+
+            return clusterOptions
+          },
+        };
+        network.clusterByHubsize(70, clusterOptionsByData);
+    });
+
 
 </script>
 

@@ -218,5 +218,5 @@ def network(
 
     return templates.TemplateResponse(
         "network.html",
-        {"request": request, "nodes": nodes.values(), "edges": edges},
+        {"request": request, "nodes": nodes, "edges": edges},
     )
