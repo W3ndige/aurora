@@ -6,6 +6,11 @@
 
 <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script type="text/javascript">
+    var clusterIndex = 0;
+    var clusters = [];
+    var lastClusterZoomLevel = 0;
+    var clusterFactor = 0.9;
+
     var container = document.getElementById('network');
     var data = {
         nodes: {{ nodes | safe }},
@@ -45,8 +50,11 @@
                 "fit": true,
                 "iterations": 1000,
                 "onlyDynamicEdges": false,
-                "updateInterval": 50
+                "updateInterval": 100
             }
+        },
+        "layout": {
+            "improvedLayout": false
         }
     }
 
