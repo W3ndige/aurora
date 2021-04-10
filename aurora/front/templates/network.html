@@ -72,12 +72,12 @@
         var clusterOptionsByData = {
           processProperties: function (clusterOptions, childNodes) {
             clusterOptions.label = "[" + childNodes.length + "]";
+            clusterOptions.font = { size: childNodes.length + 50 }
             return clusterOptions;
           },
           clusterNodeProperties: function (clusterOptions, childNodes) {
             clusterOptions.borderWidth = 3;
             clusterOptions.shape = "box";
-            clusterOptions.font = { size: 30 * childNodes.length };
 
             return clusterOptions
           },
