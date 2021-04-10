@@ -40,10 +40,14 @@ def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
             status_code=404, detail=f"Child {relation_input.child_sha256} not found."
         )
 
-    relation = queries.relation.add_relation(
-        db, parent, child, relation_input.type, relation_input.confidence
+    relation = queries.relation.get_exact_relation(
+        db, parent, child, relation_input.type
     )
-    db.commit()
+    if not relation:
+        relation = queries.relation.add_relation(
+            db, parent, child, relation_input.type, relation_input.confidence
+        )
+        db.commit()
 
     return relation
 
