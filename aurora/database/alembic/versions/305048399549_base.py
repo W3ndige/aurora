@@ -1,3 +1,5 @@
+# type: ignore
+
 """Base
 
 Revision ID: 305048399549

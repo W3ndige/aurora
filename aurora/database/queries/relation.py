@@ -162,7 +162,7 @@ def get_relations_by_hash(
         .filter(
             or_(
                 models.Relation.parent_id == sample.id,
-                models.Relation.child_id == sample.id
+                models.Relation.child_id == sample.id,
             )
         )
         .all()
