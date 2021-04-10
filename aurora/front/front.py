@@ -1,12 +1,13 @@
 import logging
 import starlette.status as status
 
-from typing import Optional
+from typing import cast, Optional
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi import APIRouter, Request, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Request, Depends, UploadFile, File, HTTPException, Form
 from starlette.templating import Jinja2Templates
 
 from aurora.core import karton
+from aurora.core import search
 from aurora.core import network as net
 from aurora.core.utils import get_magic, get_sha256
 from aurora.database import get_db, queries, schemas, models
@@ -43,7 +44,7 @@ def get_upload(request: Request):
     return templates.TemplateResponse("upload.html", {"request": request})
 
 
-@router.post("/upload", response_class=HTMLResponse)
+@router.post("/upload", response_class=RedirectResponse)
 def post_upload(file: UploadFile = File(...), db=Depends(get_db)):
     sha256 = get_sha256(file.file)
     sample = queries.sample.get_sample_by_sha256(db, sha256)
@@ -178,7 +179,7 @@ def get_strings(request: Request, offset: int = 0, db=Depends(get_db)):
 
 @router.get("/string/{sha256}", response_class=HTMLResponse)
 def get_string(request: Request, sha256: str, db=Depends(get_db)):
-    string = queries.string.get_string(db, sha256)
+    string = queries.string.get_string_by_sha256(db, sha256)
 
     if not string:
         raise HTTPException(status_code=404, detail=f"String {sha256} not found.")
@@ -220,3 +221,28 @@ def network(
         "network.html",
         {"request": request, "nodes": nodes, "edges": edges},
     )
+
+
+@router.post("/search", response_class=HTMLResponse)
+def post_search(query: str = Form(...), db=Depends(get_db)):
+    prefix, term = search.prepare_search(query)
+
+    # TODO(W3ndige): Think about single word prefixes
+    if "." not in prefix:
+        return None
+
+    model, attribute = prefix.split(".")
+
+    if model == "sample":
+        sample = cast(models.Sample, search.sample_search(db, attribute, term))
+        if sample:
+            return RedirectResponse(
+                f"/sample/{sample.sha256}", status_code=status.HTTP_302_FOUND
+            )
+
+    elif model == "string":
+        string = cast(models.String, search.string_search(db, attribute, term))
+        if string:
+            return RedirectResponse(
+                f"/string/{string.sha256}", status_code=status.HTTP_302_FOUND
+            )

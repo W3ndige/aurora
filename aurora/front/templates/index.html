@@ -3,17 +3,24 @@
 {% block content %}
 
 <div class="card-body">
+
     <div class="row mt-3">
         <div class="col-md">
-            {% if offset > 0 %}
-              <a class="btn btn-secondary" href="/?offset={{offset - 50}}">Previous</a>
-            {% endif %}
-            {% if samples | length == 50 %}
-              <a class="btn btn-primary" href="/?offset={{offset + 50}}">Next</a>
-            {% endif %}
+            <div class="card">
+                <div class="card-header">Search</div>
+                <div class="card-body">
+                    <form class="form-inline" action="/search" accept-charset="UTF-8" method="get">
+                        <div class="input-group flex-fill">
+                          <input type="search" name="query" id="query" value="" placeholder="Query" class="form-control" aria-label="Query">
+                          <div class="input-group-append">
+                            <input type="submit" name="commit" value="Search" class="btn btn-primary" data-disable-with="Search">
+                          </div>
+                        </div>
+                     </form>
+                </div>
+            </div>
         </div>
     </div>
-
 
     <div class="row mt-3">
         <div class="col-md">
@@ -46,6 +53,18 @@
          </div>
       </div>
     </div>
+
+    <div class="row mt-3">
+        <div class="col-md">
+            {% if offset > 0 %}
+              <a class="btn btn-secondary" href="/?offset={{offset - 50}}">Previous</a>
+            {% endif %}
+            {% if samples | length == 50 %}
+              <a class="btn btn-primary" href="/?offset={{offset + 50}}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}

@@ -41,6 +41,42 @@ def get_number_of_samples(db: Session) -> int:
     return db.query(models.Sample).count()
 
 
+def get_sample_by_md5(db: Session, md5: str) -> Optional[models.Sample]:
+
+    """Returns a sample by the MD5 hash.
+
+    Queries a sample which MD5 hash is equal to the passed one.
+
+    Args:
+         db (Session): Database session.
+         sha256 (str): MD5 hash of the sample.
+
+    Returns:
+        Sample Sample with the specified hash.
+
+    """
+
+    return db.query(models.Sample).filter(models.Sample.md5 == md5).first()
+
+
+def get_sample_by_sha1(db: Session, sha1: str) -> Optional[models.Sample]:
+
+    """Returns a sample by the SHA1 hash.
+
+    Queries a sample which SHA1 hash is equal to the passed one.
+
+    Args:
+         db (Session): Database session.
+         sha256 (str): SHA1 hash of the sample.
+
+    Returns:
+        Sample Sample with the specified hash.
+
+    """
+
+    return db.query(models.Sample).filter(models.Sample.sha1 == sha1).first()
+
+
 def get_sample_by_sha256(db: Session, sha256: str) -> Optional[models.Sample]:
 
     """Returns a sample by the SHA256 hash.
@@ -57,6 +93,24 @@ def get_sample_by_sha256(db: Session, sha256: str) -> Optional[models.Sample]:
     """
 
     return db.query(models.Sample).filter(models.Sample.sha256 == sha256).first()
+
+
+def get_sample_by_sha512(db: Session, sha512: str) -> Optional[models.Sample]:
+
+    """Returns a sample by the SHA512 hash.
+
+    Queries a sample which SHA512 hash is equal to the passed one.
+
+    Args:
+         db (Session): Database session.
+         sha256 (str): SHA512 hash of the sample.
+
+    Returns:
+        Sample Sample with the specified hash.
+
+    """
+
+    return db.query(models.Sample).filter(models.Sample.sha512 == sha512).first()
 
 
 def get_sample_parents(db: Session, sample: models.Sample) -> List[models.Sample]:
