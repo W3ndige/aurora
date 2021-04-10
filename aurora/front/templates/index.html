@@ -8,13 +8,16 @@
         <div class="col-md">
             <div class="card">
                 <div class="card-header">Search</div>
-                <form action="search" method="post">
-                    <div class="form-group">
-                        <label for="query">Search query:</label>
-                        <input type="text" name="query" class="form-control-text" id="query">
-                        <input type="submit" value="Search" name="submit" class="btn btn-primary">
-                    </div>
-                </form>
+                <div class="card-body">
+                    <form class="form-inline" action="/search" accept-charset="UTF-8" method="get">
+                        <div class="input-group flex-fill">
+                          <input type="search" name="query" id="query" value="" placeholder="Query" class="form-control" aria-label="Query">
+                          <div class="input-group-append">
+                            <input type="submit" name="commit" value="Search" class="btn btn-primary" data-disable-with="Search">
+                          </div>
+                        </div>
+                     </form>
+                </div>
             </div>
         </div>
     </div>
