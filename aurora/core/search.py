@@ -24,14 +24,16 @@ class StringSearch(partial, Enum):
 
 
 def prepare_search(query: str) -> Tuple[str, str]:
-    query = query.lower().replace(" ", "")
+    query = query.replace(" ", "")
     prefix, term = query.split(":", 1)
+    prefix = prefix.lower()
 
     return prefix, term
 
 
 def sample_search(db, attribute: str, term: str) -> Optional[str]:
     sample = None
+    term = term.lower()
     if attribute == "md5":
         sample = SampleSearch.MD5(db, term)
     elif attribute == "sha1":
@@ -47,6 +49,7 @@ def sample_search(db, attribute: str, term: str) -> Optional[str]:
 def string_search(db, attribute: str, term: str) -> Optional[str]:
     string = None
     if attribute == "sha256":
+        term = term.lower()
         string = StringSearch.SHA256(db, term)
     elif attribute == "value":
         string = StringSearch.VALUE(db, term)
