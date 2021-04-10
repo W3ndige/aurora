@@ -28,12 +28,13 @@ def index(request: Request, offset: int = 0, db=Depends(get_db)):
         samples_with_info.append(
             {
                 "sample": sample,
-                "rel_size": len(queries.sample.get_sample_related(db, sample))
+                "rel_size": len(queries.sample.get_sample_related(db, sample)),
             }
         )
 
     return templates.TemplateResponse(
-        "index.html", {"request": request, "samples_with_info": samples_with_info, "offset": offset}
+        "index.html",
+        {"request": request, "samples_with_info": samples_with_info, "offset": offset},
     )
 
 
@@ -117,7 +118,7 @@ def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
             "relations": db_relations,
             "nodes": nodes,
             "edges": edges,
-        }
+        },
     )
 
 
@@ -158,7 +159,6 @@ def get_sample_network(request: Request, sha256: str, db=Depends(get_db)):
     db_relations = queries.relation.get_relations_by_hash(db, sample)
 
     nodes, edges = net.prepare_sample_graph(db_relations)
-
 
     return templates.TemplateResponse(
         "network.html",
