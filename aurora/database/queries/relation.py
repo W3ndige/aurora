@@ -70,8 +70,8 @@ def get_confident_relation(db: Session) -> List[models.Relation]:
 
 
 def get_exact_relation(
-        db: Session, parent: models.Sample, child: models.Sample, rel_type: str
-) -> models.Relation:
+    db: Session, parent: models.Sample, child: models.Sample, rel_type: str
+) -> Optional[models.Relation]:
 
     """Queries Relation objects from the database with specified both child and parent, together with a type.
 
@@ -80,7 +80,7 @@ def get_exact_relation(
     Args:
         db (Session): Database session.
         parent (Sample): Parent sample of the relationship.
-        chikd (Sample): Child sample of the relationship.
+        child (Sample): Child sample of the relationship.
         rel_type (str): Type of the relationship.
 
     Returns:
@@ -93,8 +93,9 @@ def get_exact_relation(
         .filter(
             models.Relation.parent_id == parent.id,
             models.Relation.child_id == child.id,
-            models.Relation.relation_type == rel_type
-        ).all()
+            models.Relation.relation_type == rel_type,
+        )
+        .first()
     )
 
 

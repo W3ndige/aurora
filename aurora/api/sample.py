@@ -4,8 +4,8 @@ from typing import List, Optional
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 
 from aurora.core import karton
-from aurora.core.utils import get_magic, get_sha256
-from aurora.database import get_db, queries, schemas, models
+from aurora.core.utils import get_sha256
+from aurora.database import get_db, queries, schemas
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +103,6 @@ def get_minhashes(sha256: str, minhash_type: Optional[str] = None, db=Depends(ge
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
     return queries.minhash.get_sample_minhash(db, sample, minhash_type)
-
 
 
 @router.get("/{sha256}/ssdeep", response_model=schemas.SsDeep)

@@ -69,18 +69,11 @@ def push_minhash(
 
     """
 
-    task = Task(
-        {
-            "type": "feature",
-            "stage": "minhash",
-            "kind": minhash_type
-        }
-    )
+    task = Task({"type": "feature", "stage": "minhash", "kind": minhash_type})
 
     task.add_payload("sha256", sha256)
     task.add_payload("seed", seed)
     task.add_payload("hash_values", hash_values)
-    task.add_payload("reanalyze", reanalyze)
 
     producer.send_task(task)
 

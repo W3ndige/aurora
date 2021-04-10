@@ -1,4 +1,4 @@
-import datasketch
+import datasketch  # type: ignore
 
 from typing import List
 from fastapi import APIRouter, Depends

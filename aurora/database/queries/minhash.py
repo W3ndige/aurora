@@ -29,7 +29,7 @@ def get_minhashes(
 
 
 def get_sample_minhash(
-    db: Session, sample: models.Sample, type: Optional[models.MinhashType]
+    db: Session, sample: models.Sample, type: Optional[str] = None
 ) -> List[models.Minhash]:
 
     """Queries Minhash objects tat belong to the passed sample.
