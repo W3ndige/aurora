@@ -30,17 +30,15 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for sample in samples %}
+                    {% for sample_with_info in samples_with_info %}
                     <tr>
                         <td>
-                            <span class="index_span">{{sample.md5}}</span>
-                            <span class="index_span"><a href="/sample/{{ sample.sha256 }}">{{sample.sha256}}</a></span>
-                            <span class="index_span">{{sample.filename}}</span>
+                            <span class="index_span">{{sample_with_info.sample.md5}}</span>
+                            <span class="index_span"><a href="/sample/{{ sample_with_info.sample.sha256 }}">{{sample_with_info.sample.sha256}}</a></span>
+                            <span class="index_span">{{sample_with_info.sample.filename}}</span>
                         </td>
-                        {% set parents_length =  sample.parents | length %}
-                        {% set children_length =  sample.children | length %}
-                        <td> {{ parents_length | int + children_length | int }} </td>
-                        <td> {{sample.filesize}} </td>
+                        <td>{{ sample_with_info.rel_size}}</td>
+                        <td> {{sample_with_info.sample.filesize}} </td>
                     </tr>
                     {% endfor %}
                   </tbody>

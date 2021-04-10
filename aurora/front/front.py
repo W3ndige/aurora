@@ -23,8 +23,18 @@ logger = logging.getLogger(__name__)
 def index(request: Request, offset: int = 0, db=Depends(get_db)):
     samples = queries.sample.get_samples(db, offset=offset)
 
+    samples_with_info = []
+    for sample in samples:
+        samples_with_info.append(
+            {
+                "sample": sample,
+                "rel_size": len(queries.sample.get_sample_related(db, sample)),
+            }
+        )
+
     return templates.TemplateResponse(
-        "index.html", {"request": request, "samples": samples, "offset": offset}
+        "index.html",
+        {"request": request, "samples_with_info": samples_with_info, "offset": offset},
     )
 
 
@@ -70,10 +80,9 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
     sample_ssdeep = sample.ssdeep.ssdeep
     related_samples = list(queries.sample.get_sample_related(db, sample))
 
-    sample_relations = queries.relation.get_relations_by_hash(db, sample)
+    db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    network = net.create_network(sample_relations)
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
     return templates.TemplateResponse(
         "sample/related.html",
@@ -84,7 +93,6 @@ def sample_index(request: Request, sha256: str, db=Depends(get_db)):
             "related_samples": related_samples,
             "nodes": nodes,
             "edges": edges,
-            "options": options,
         },
     )
 
@@ -96,11 +104,10 @@ def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    relations = queries.relation.get_relations_by_hash(db, sample)
     sample_ssdeep = sample.ssdeep.ssdeep
+    db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    network = net.create_network(relations)
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
     return templates.TemplateResponse(
         "sample/relations.html",
@@ -108,10 +115,9 @@ def get_sample_relations(request: Request, sha256: str, db=Depends(get_db)):
             "request": request,
             "sample": sample,
             "sample_ssdeep": sample_ssdeep,
-            "relations": relations,
+            "relations": db_relations,
             "nodes": nodes,
             "edges": edges,
-            "options": options,
         },
     )
 
@@ -123,12 +129,12 @@ def get_sample_strings(request: Request, sha256: str, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    relations = queries.relation.get_relations_by_hash(db, sample)
     sample_ssdeep = sample.ssdeep.ssdeep
     strings = sample.strings
 
-    network = net.create_network(relations)
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    db_relations = queries.relation.get_relations_by_hash(db, sample)
+
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
     return templates.TemplateResponse(
         "sample/strings.html",
@@ -139,7 +145,6 @@ def get_sample_strings(request: Request, sha256: str, db=Depends(get_db)):
             "strings": strings,
             "nodes": nodes,
             "edges": edges,
-            "options": options,
         },
     )
 
@@ -151,15 +156,13 @@ def get_sample_network(request: Request, sha256: str, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    sample_relations = queries.relation.get_relations_by_hash(db, sample)
+    db_relations = queries.relation.get_relations_by_hash(db, sample)
 
-    network = net.create_network(sample_relations)
-
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    nodes, edges = net.prepare_sample_graph(db_relations)
 
     return templates.TemplateResponse(
         "network.html",
-        {"request": request, "nodes": nodes, "edges": edges, "options": options},
+        {"request": request, "nodes": nodes, "edges": edges},
     )
 
 
@@ -209,12 +212,11 @@ def network(
 
     filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 
-    relations = queries.relation.get_simplified_relations(db, filters)
-    network = net.create_simplified_graph(relations)
+    db_relations = queries.relation.get_simplified_relations(db, filters)
 
-    nodes, edges, heading, height, width, options = network.get_network_data()
+    nodes, edges = net.prepare_large_graph(db_relations)
 
     return templates.TemplateResponse(
         "network.html",
-        {"request": request, "nodes": nodes, "edges": edges, "options": options},
+        {"request": request, "nodes": nodes, "edges": edges},
     )
