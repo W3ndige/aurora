@@ -5,7 +5,6 @@ This module describes a model for storing Minhash values.
 
 from __future__ import annotations
 
-import enum
 import sqlalchemy as sql
 
 from typing import TYPE_CHECKING
