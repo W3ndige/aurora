@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get("/", response_model=List[schemas.Minhash])
-def get_minhashes(minhash_type: models.MinhashType = None, db=Depends(get_db)):
+def get_minhashes(minhash_type: str = None, db=Depends(get_db)):
     return queries.minhash.get_minhashes(db, minhash_type)
 
 

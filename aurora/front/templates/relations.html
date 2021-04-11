@@ -31,7 +31,7 @@
                     <tr>
                         <td><a href="/sample/{{ relation.parent.sha256 }}">{{relation.parent.sha256}}</a></td>
                         <td><a href="/sample/{{ relation.child.sha256 }}">{{relation.child.sha256}}</a></td>
-                        <td> {{relation.relation_type.value}} </td>
+                        <td> {{relation.relation_type}} </td>
                         <td> {{relation.confidence}} </td>
                     </tr>
                     {% endfor %}
