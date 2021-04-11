@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import enum
 import sqlalchemy as sql
 
 from typing import TYPE_CHECKING
@@ -10,13 +9,6 @@ from aurora.database import Base
 
 if TYPE_CHECKING:
     from aurora.database.models import Sample  # noqa: F401
-
-
-class RelationType(str, enum.Enum):
-    STRINGS_MINHASH = "STRINGS_MINHASH"
-    DISASM_MINHASH = "DISASM_MINHASH"
-    STRING = "STRING"
-    SSDEEP = "SSDEEP"
 
 
 class Relation(Base):
@@ -29,7 +21,7 @@ class Relation(Base):
     child_id = sql.Column(
         sql.Integer, sql.ForeignKey("sample.id"), nullable=False, index=True
     )
-    relation_type = sql.Column(sql.Enum(RelationType), nullable=False)
+    relation_type = sql.Column(sql.String, nullable=False)
     confidence = sql.Column(sql.Float, nullable=False)
 
     sql.UniqueConstraint("parent_id", "child_id", "relation_type")

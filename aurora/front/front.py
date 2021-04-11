@@ -208,8 +208,6 @@ def network(
     confidence: Optional[str] = None,
     db=Depends(get_db),
 ):
-    if relation_type:
-        relation_type = models.RelationType[relation_type]
 
     filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
 

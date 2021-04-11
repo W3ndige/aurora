@@ -42,11 +42,7 @@ def upgrade():
         sa.Column("sample_id", sa.Integer(), nullable=True),
         sa.Column("seed", sa.BIGINT(), nullable=False),
         sa.Column("hash_values", sa.ARRAY(sa.BIGINT()), nullable=False),
-        sa.Column(
-            "minhash_type",
-            sa.Enum("STRINGS", "DISASM", name="minhashtype"),
-            nullable=False,
-        ),
+        sa.Column("minhash_type", sa.String(), nullable=False),
         sa.Column("extra_data", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.ForeignKeyConstraint(
             ["sample_id"],
@@ -62,17 +58,7 @@ def upgrade():
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("parent_id", sa.Integer(), nullable=False),
         sa.Column("child_id", sa.Integer(), nullable=False),
-        sa.Column(
-            "relation_type",
-            sa.Enum(
-                "STRINGS_MINHASH",
-                "DISASM_MINHASH",
-                "STRING",
-                "SSDEEP",
-                name="relationtype",
-            ),
-            nullable=False,
-        ),
+        sa.Column("relation_type", sa.String(), nullable=False),
         sa.Column(
             "confidence",
             sa.Float(),
