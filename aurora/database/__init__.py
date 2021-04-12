@@ -3,10 +3,10 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-from aurora import config
+from aurora.config import DATABASE_URL
 
 
-engine: Engine = create_engine(config.POSTGRES_URI)
+engine: Engine = create_engine(DATABASE_URL)
 
 db_session: sessionmaker = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
