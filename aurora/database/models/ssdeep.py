@@ -10,7 +10,7 @@ from aurora.core import utils
 from aurora.database import Base
 
 if TYPE_CHECKING:
-    from aurora.database.models import Sample
+    from aurora.database.models import Sample  # noqa: F401
 
 
 class SsDeep(Base):

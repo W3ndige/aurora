@@ -6,7 +6,8 @@ from sqlalchemy.orm import relationship
 from aurora.database import Base
 
 if TYPE_CHECKING:
-    from aurora.database.models import Sample
+    from aurora.database.models import Sample  # noqa: F401
+
 
 class String(Base):
     __tablename__ = "string"

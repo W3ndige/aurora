@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 
-from aurora.database import get_db, queries, schemas, models
+from aurora.database import get_db, queries, schemas
 
 router = APIRouter(
     prefix="/relation",
@@ -11,7 +11,7 @@ router = APIRouter(
 
 @router.get("/", response_model=List[schemas.Relation])
 def get_relations(
-    relation_type: Optional[models.RelationType] = None,
+    relation_type: Optional[str] = None,
     confidence: Optional[float] = None,
     db=Depends(get_db),
 ):
@@ -40,10 +40,14 @@ def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
             status_code=404, detail=f"Child {relation_input.child_sha256} not found."
         )
 
-    relation = queries.relation.add_relation(
-        db, parent, child, relation_input.type, relation_input.confidence
+    relation = queries.relation.get_exact_relation(
+        db, parent, child, relation_input.type
     )
-    db.commit()
+    if not relation:
+        relation = queries.relation.add_relation(
+            db, parent, child, relation_input.type, relation_input.confidence
+        )
+        db.commit()
 
     return relation
 
@@ -51,7 +55,7 @@ def add_relation(relation_input: schemas.InputRelation, db=Depends(get_db)):
 @router.get("/parent/{sha256}", response_model=List[schemas.Relation])
 def get_relations_by_parent(
     sha256: str,
-    relation_type: Optional[models.RelationType] = None,
+    relation_type: Optional[str] = None,
     confidence: Optional[float] = None,
     db=Depends(get_db),
 ):
@@ -68,7 +72,7 @@ def get_relations_by_parent(
 @router.get("/child/{sha256}", response_model=List[schemas.Relation])
 def get_relations_by_child(
     sha256: str,
-    relation_type: Optional[models.RelationType] = None,
+    relation_type: Optional[str] = None,
     confidence: Optional[float] = None,
     db=Depends(get_db),
 ):
@@ -85,7 +89,7 @@ def get_relations_by_child(
 @router.get("/{sha256}", response_model=List[schemas.Relation])
 def get_relations_by_hash(
     sha256: str,
-    relation_type: Optional[models.RelationType] = None,
+    relation_type: Optional[str] = None,
     confidence: Optional[float] = None,
     db=Depends(get_db),
 ):

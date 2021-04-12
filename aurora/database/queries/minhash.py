@@ -5,7 +5,7 @@ from aurora.database import models
 
 
 def get_minhashes(
-    db: Session, minhash_type: Optional[models.MinhashType] = None
+    db: Session, minhash_type: Optional[str] = None
 ) -> List[models.Minhash]:
 
     """Queries Minhash objects from the database.
@@ -14,7 +14,7 @@ def get_minhashes(
 
     Args:
         db (Session): Database session.
-        minhash_type (Optional(MinhashType)): Optional MinhashType to filter out objects.
+        minhash_type (Optional(str)): Optional type of minhash to filter out objects.
 
     Returns:
         List(Minhash) Returns a list of Minhash objects in the database.
@@ -29,7 +29,7 @@ def get_minhashes(
 
 
 def get_sample_minhash(
-    db: Session, sample: models.Sample, type: Optional[models.MinhashType]
+    db: Session, sample: models.Sample, type: Optional[str] = None
 ) -> List[models.Minhash]:
 
     """Queries Minhash objects tat belong to the passed sample.
@@ -72,7 +72,7 @@ def add_minhash(
         db (Session): Database session.
         seed (int): Seed of the minhash.
         hash_values (List(int)): List of hash values of the minhash.
-        minhash_type (MinhashType): Type of the minhash.
+        minhash_type (str): Type of the minhash.
         extra_data (Optional(Dict[(str, Any))): Optional extra data stored with the minhash.
 
     Returns:

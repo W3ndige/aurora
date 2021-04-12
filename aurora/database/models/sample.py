@@ -16,9 +16,9 @@ from aurora.database.models.relation import Relation
 RelationInput = namedtuple("RelationInput", ["parent", "child", "type", "confidence"])
 
 if TYPE_CHECKING:
-    from aurora.database.models import Minhash
-    from aurora.database.models import String
-    from aurora.database.models import SsDeep
+    from aurora.database.models import Minhash  # noqa: F401
+    from aurora.database.models import String  # noqa: F401
+    from aurora.database.models import SsDeep  # noqa: F401
 
 
 class Sample(Base):
@@ -41,10 +41,10 @@ class Sample(Base):
         "related_children",
         "child",
         creator=lambda relation_input: Relation(
-            parent=relation_input.parent,
-            child=relation_input.child,
-            relation_type=relation_input.type,
-            confidence=relation_input.confidence,
+            parent=relation_input.parent,  # type: ignore
+            child=relation_input.child,  # type: ignore
+            relation_type=relation_input.type,  # type: ignore
+            confidence=relation_input.confidence,  # type: ignore
         ),
     )
 
@@ -52,10 +52,10 @@ class Sample(Base):
         "related_parents",
         "parent",
         creator=lambda relation_input: Relation(
-            parent=relation_input.parent,
-            child=relation_input.child,
-            relation_type=relation_input.type,
-            confidence=relation_input.confidence,
+            parent=relation_input.parent,  # type: ignore
+            child=relation_input.child,  # type: ignore
+            relation_type=relation_input.type,  # type: ignore
+            confidence=relation_input.confidence,  # type: ignore
         ),
     )
 

@@ -1,9 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 
-from aurora.database.models.relation import RelationType
-from aurora.database.models.minhash import MinhashType
-
 
 class Sample(BaseModel):
     id: int
@@ -22,7 +19,7 @@ class Sample(BaseModel):
 class InputMinhash(BaseModel):
     seed: int
     hash_values: List[int]
-    minhash_type: MinhashType
+    minhash_type: str
     extra_data: Optional[Dict[str, Any]]
 
 
@@ -30,24 +27,23 @@ class Minhash(BaseModel):
     id: int
     seed: int
     hash_values: List[int]
-    minhash_type: MinhashType
+    minhash_type: str
     sample: Sample
     extra_data: Optional[Dict[str, Any]]
 
     class Config:
         orm_mode = True
-        arbitrary_types_allowed = True
 
 
 class InputRelation(BaseModel):
     parent_sha256: str
     child_sha256: str
-    type: RelationType
+    type: str
     confidence: float
 
 
 class RelationFilter(BaseModel):
-    relation_type: Optional[RelationType]
+    relation_type: Optional[str]
     confidence: Optional[float]
 
 
@@ -55,7 +51,7 @@ class Relation(BaseModel):
     id: int
     parent_id: int
     child_id: int
-    relation_type: RelationType
+    relation_type: str
     confidence: float
 
     class Config:

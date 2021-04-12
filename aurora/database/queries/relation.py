@@ -1,7 +1,7 @@
 import logging
 
 from typing import List, Optional
-from sqlalchemy import func, tuple_
+from sqlalchemy import func, tuple_, or_
 from sqlalchemy.orm import Session
 
 from aurora.database import models, schemas
@@ -67,6 +67,36 @@ def get_confident_relation(db: Session) -> List[models.Relation]:
     )
 
     return confident_relations
+
+
+def get_exact_relation(
+    db: Session, parent: models.Sample, child: models.Sample, rel_type: str
+) -> Optional[models.Relation]:
+
+    """Queries Relation objects from the database with specified both child and parent, together with a type.
+
+    Returns an exact relation between two passed samples of a specified type.
+
+    Args:
+        db (Session): Database session.
+        parent (Sample): Parent sample of the relationship.
+        child (Sample): Child sample of the relationship.
+        rel_type (str): Type of the relationship.
+
+    Returns:
+        Relation Exact relation in a database.
+
+    """
+
+    return (
+        db.query(models.Relation)
+        .filter(
+            models.Relation.parent_id == parent.id,
+            models.Relation.child_id == child.id,
+            models.Relation.relation_type == rel_type,
+        )
+        .first()
+    )
 
 
 def get_relations_by_parent(
@@ -160,8 +190,10 @@ def get_relations_by_hash(
         db.query(models.Relation)
         .filter(*query_filters)
         .filter(
-            (models.Relation.parent_id == sample.id)
-            | (models.Relation.child_id == sample.id)
+            or_(
+                models.Relation.parent_id == sample.id,
+                models.Relation.child_id == sample.id,
+            )
         )
         .all()
     )
@@ -229,7 +261,7 @@ def add_relation(
     """
 
     relation = models.Relation(
-        parent=parent, child=child, relation_type=rel_type, confidence=confidence
+        parent=parent, child=child, relation_type=rel_type, confidence=confidence  # type: ignore
     )
 
     db.add(relation)

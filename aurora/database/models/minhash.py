@@ -5,7 +5,6 @@ This module describes a model for storing Minhash values.
 
 from __future__ import annotations
 
-import enum
 import sqlalchemy as sql
 
 from typing import TYPE_CHECKING
@@ -16,17 +15,7 @@ from aurora.database import Base
 
 
 if TYPE_CHECKING:
-    from aurora.database.models import Sample
-
-
-class MinhashType(str, enum.Enum):
-    """Available types of minhash.
-
-    Data type from which the minhash was calculated.
-    """
-
-    STRINGS = "STRINGS"
-    DISASM = "DISASM"
+    from aurora.database.models import Sample  # noqa: F401
 
 
 class Minhash(Base):
@@ -37,7 +26,7 @@ class Minhash(Base):
     sample_id = sql.Column(sql.Integer, sql.ForeignKey("sample.id"))
     seed = sql.Column(sql.BIGINT, nullable=False)
     hash_values = sql.Column(sql.ARRAY(sql.BIGINT()), nullable=False)
-    minhash_type = sql.Column(sql.Enum(MinhashType), nullable=False, index=True)
+    minhash_type = sql.Column(sql.String, nullable=False, index=True)
     extra_data = sql.Column(JSONB)
 
     sql.UniqueConstraint("sample_id", "analysis_type", name="unique_analysis_sample")

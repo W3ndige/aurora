@@ -52,7 +52,7 @@ def get_unique_strings(
     return strings
 
 
-def get_string(db: Session, sha256: str) -> Optional[models.String]:
+def get_string_by_sha256(db: Session, sha256: str) -> Optional[models.String]:
 
     """Get string by SHA256 hash.
 
@@ -68,6 +68,26 @@ def get_string(db: Session, sha256: str) -> Optional[models.String]:
     """
 
     string = db.query(models.String).filter(models.String.sha256 == sha256).first()
+
+    return string
+
+
+def get_string_by_value(db: Session, value: str) -> Optional[models.String]:
+
+    """Get string by SHA256 hash.
+
+    Returns a string with a specified SHA256 hash.
+
+    Args:
+        db (Session): Database session.
+        value (str): Value hash of the string.
+
+    Returns:
+        String String with the specified hash.
+
+    """
+
+    string = db.query(models.String).filter(models.String.value == value).first()
 
     return string
 
