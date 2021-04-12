@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: deploy/Dockerfile
+    env_file:
+      - .env
     depends_on:
       - postgres
     ports:
@@ -11,10 +13,8 @@ services:
   postgres:
     image: postgres
     restart: always
-    environment:
-      - POSTGRES_DB=aurora
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - .env
   redis:
     image: redis:alpine
   minio:
