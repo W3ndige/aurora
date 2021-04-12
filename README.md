@@ -5,7 +5,7 @@
 
 Automated malware similarity platform with modularity in mind.
 
-![Aurora preview](docs/_static/aurora_preview.gif)
+![Aurora preview](docs/_static/aurora-preview.gif)
 
 ## Usage
 
