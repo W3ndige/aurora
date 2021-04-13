@@ -3,8 +3,8 @@ FROM python:3.8
 WORKDIR /app
 RUN apt-get update
 RUN apt-get install -y libmagic-dev libfuzzy-dev libfuzzy2
+COPY requirements.txt setup.py karton.ini prestart.sh ./
 COPY aurora aurora
 COPY tests tests
-COPY requirements.txt setup.py karton.ini ./
 RUN pip install .
 CMD [ "python", "-m", "pytest" ]

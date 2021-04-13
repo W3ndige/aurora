@@ -2,14 +2,13 @@ services:
   aurora-test:
     build:
       context: .
-      dockerfile: tests/Dockerfile
+      dockerfile: deploy/Dockerfile.test
+    env_file:
+      - .env
     depends_on:
       - postgres
-    restart: on-failure
   postgres:
     image: postgres
     restart: always
-    environment:
-      - POSTGRES_DB=aurora_test
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - .env
