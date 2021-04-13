@@ -7,9 +7,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from aurora.config import DATABASE_URL
 
-DB_URL = f"{DATABASE_URL}_test" if os.environ.get("TESTING") else DATABASE_URL
 
-engine: Engine = create_engine(DB_URL)
+engine: Engine = create_engine(DATABASE_URL)
 
 db_session: sessionmaker = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 

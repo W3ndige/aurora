@@ -5,6 +5,6 @@ RUN apt-get update
 RUN apt-get install -y libmagic-dev libfuzzy-dev libfuzzy2
 COPY aurora aurora
 COPY tests tests
-COPY requirements.txt karton.ini ./
-RUN pip install -r requirements.txt
+COPY requirements.txt setup.py karton.ini ./
+RUN pip install .
 CMD [ "python", "-m", "pytest" ]
