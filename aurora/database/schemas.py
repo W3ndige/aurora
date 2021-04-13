@@ -71,7 +71,6 @@ class SsDeep(BaseModel):
 
 class InputString(BaseModel):
     value: str
-    sha256: str
     heuristic: str
 
 
