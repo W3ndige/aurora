@@ -125,9 +125,7 @@ def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     sha256_object.update(string.value.encode("utf-8"))
     sha256 = sha256_object.hexdigest()
 
-    db_string = queries.string.add_string(
-        db, string.value, sha256, string.heuristic
-    )
+    db_string = queries.string.add_string(db, string.value, sha256, string.heuristic)
 
     sample.strings.append(db_string)
     db.commit()
