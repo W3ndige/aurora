@@ -12,3 +12,4 @@ pyvis==0.1.9
 #dev
 requests==2.25.1
 pytest==6.2.2
+datasketch==1.5.3
