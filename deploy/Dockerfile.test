@@ -4,7 +4,7 @@ WORKDIR /app
 RUN apt-get update
 RUN apt-get install -y libmagic-dev libfuzzy-dev libfuzzy2
 COPY requirements.txt setup.py karton.ini prestart.sh ./
+RUN pip install .
 COPY aurora aurora
 COPY tests tests
-RUN pip install .
 CMD [ "python", "-m", "pytest" ]
