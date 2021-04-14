@@ -12,7 +12,9 @@ def test_add_sample(client, monkeypatch):
     monkeypatch.setattr("aurora.core.karton.push_ssdeep", mock_push_ssdeep)
 
     file = upload_file()
-    response = client.post("/api/v1/sample/", files={'file': (file["filename"], file["content"])}).json()
+    response = client.post(
+        "/api/v1/sample/", files={"file": (file["filename"], file["content"])}
+    ).json()
 
     assert response["filename"] == file["filename"]
     assert response["sha256"] == file["sha256"]
@@ -34,7 +36,9 @@ def test_add_minhash(client):
     minhash = add_minhash()
     minhash.update({"minhash_type": "strings"})
 
-    response = client.post(f"api/v1/sample/{file['sha256']}/minhash", json=minhash).json()
+    response = client.post(
+        f"api/v1/sample/{file['sha256']}/minhash", json=minhash
+    ).json()
 
     assert response["minhash_type"] == minhash["minhash_type"]
     assert response["seed"] == minhash["seed"]
@@ -86,9 +90,10 @@ def test_add_string_incorrect_sha256(client):
 
     modified_string["value"] = string["value"]
 
-    response = client.post(f"api/v1/sample/{file['sha256']}/string", json=modified_string).json()
+    response = client.post(
+        f"api/v1/sample/{file['sha256']}/string", json=modified_string
+    ).json()
 
     assert response["value"] == string["value"]
     assert response["sha256"] == string["sha256"]
     assert response["heuristic"] == string["heuristic"]
-

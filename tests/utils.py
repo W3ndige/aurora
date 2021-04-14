@@ -5,6 +5,7 @@ import datasketch
 
 from typing import Dict, Any
 
+
 def upload_file(filename: str = None, content: str = None) -> Dict[str, str]:
     if not filename:
         filename = "filename"
@@ -24,7 +25,7 @@ def upload_file(filename: str = None, content: str = None) -> Dict[str, str]:
         "filename": filename,
         "content": content,
         "sha256": sha256,
-        "ssdeep": ssdeep_hash
+        "ssdeep": ssdeep_hash,
     }
 
 
@@ -36,10 +37,7 @@ def add_minhash() -> Dict[str, Any]:
 
     lean_minhash = datasketch.LeanMinHash(minhash)
 
-    return {
-        "seed": lean_minhash.seed,
-        "hash_values": lean_minhash.hashvalues.tolist()
-    }
+    return {"seed": lean_minhash.seed, "hash_values": lean_minhash.hashvalues.tolist()}
 
 
 def add_string(string: str = None, heuristic: str = None) -> Dict[str, str]:
@@ -53,9 +51,4 @@ def add_string(string: str = None, heuristic: str = None) -> Dict[str, str]:
     sha256_object.update(string.encode("utf-8"))
     sha256 = sha256_object.hexdigest()
 
-    return {
-        "value": string,
-        "sha256": sha256,
-        "heuristic": heuristic
-    }
-
+    return {"value": string, "sha256": sha256, "heuristic": heuristic}
