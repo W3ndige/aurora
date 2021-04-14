@@ -2,6 +2,8 @@
 
 ![Linting](https://github.com/W3ndige/aurora/actions/workflows/lint.yml/badge.svg?branch=master)
 
+![Testing](https://github.com/W3ndige/aurora/actions/workflows/test.yml/badge.svg?branch=master)
+
 
 Automated malware similarity platform with modularity in mind.
 
