@@ -1,5 +1,5 @@
 services:
-  aurora-test:
+  aurora-tests:
     build:
       context: .
       dockerfile: deploy/Dockerfile.test

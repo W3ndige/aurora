@@ -1,0 +1,19 @@
+name: Testing
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Perform tests
+        run: |
+          docker-compose -f docker-compose-test.yml build
+          docker-compose -f docker-compose-test.yml up -d aurora-tests
+          docker-compose -f docker-compose-test.yml logs -f -t aurora-tests
+          ([ $(docker wait aurora_aurora-tests_1) == 0 ])
