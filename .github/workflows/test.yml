@@ -1,0 +1,28 @@
+name: Testing
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create env file
+        run: |
+          touch .env
+          echo API_ENDPOINT="https://xxx.execute-api.us-west-2.amazonaws.com" >> .env
+          echo POSTGRES_USER=postgres >> .env
+          echo POSTGRES_PASSWORD=postgres >> .env
+          echo POSTGRES_SERVER=postgres >> .env
+          echo POSTGRES_PORT=5432 >> .env
+          echo POSTGRES_DB=aurora >> .env
+      - name: Perform tests
+        run: |
+          docker-compose -f docker-compose-test.yml build
+          docker-compose -f docker-compose-test.yml up -d aurora-tests
+          docker-compose -f docker-compose-test.yml logs -f -t aurora-tests
+          ([ $(docker wait aurora_aurora-tests_1) == 0 ])

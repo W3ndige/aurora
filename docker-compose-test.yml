@@ -1,0 +1,14 @@
+services:
+  aurora-tests:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.test
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    restart: always
+    env_file:
+      - .env

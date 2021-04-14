@@ -5,10 +5,11 @@ psycopg2-binary==2.8.6
 ssdeep==3.4
 python-magic==0.4.18
 karton-core==4.1.0
-datasketch==1.5.3
 alembic==1.5.5
 jinja2==2.11.3
 pyvis==0.1.9
 
-# dev
+#dev
+requests==2.25.1
 pytest==6.2.2
+datasketch==1.5.3

@@ -1,4 +1,5 @@
 import logging
+import hashlib
 
 from typing import List, Optional
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
@@ -120,9 +121,11 @@ def add_string(sha256: str, string: schemas.InputString, db=Depends(get_db)):
     if not sample:
         raise HTTPException(status_code=404, detail=f"Sample {sha256} not found.")
 
-    db_string = queries.string.add_string(
-        db, string.value, string.sha256, string.heuristic
-    )
+    sha256_object = hashlib.sha256()
+    sha256_object.update(string.value.encode("utf-8"))
+    sha256 = sha256_object.hexdigest()
+
+    db_string = queries.string.add_string(db, string.value, sha256, string.heuristic)
 
     sample.strings.append(db_string)
     db.commit()
