@@ -8,17 +8,19 @@ from aurora.app import app
 from aurora.database import get_db, Base
 from aurora.config import DATABASE_URL, POSTGRES_DB
 
-engine = create_engine(DATABASE_URL)
+default_engine = create_engine(DATABASE_URL)
 
 DB_URL = f"{DATABASE_URL}_test"
 
-with engine.connect() as default_conn:
+with default_engine.connect() as default_conn:
     default_conn.execution_options(isolation_level="AUTOCOMMIT").execute(
         f"DROP DATABASE IF EXISTS {POSTGRES_DB}_test"
     )
     default_conn.execution_options(isolation_level="AUTOCOMMIT").execute(
         f"CREATE DATABASE {POSTGRES_DB}_test"
     )
+
+engine = create_engine(f"{DATABASE_URL}_test")
 
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
