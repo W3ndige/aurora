@@ -1,0 +1,20 @@
+body {
+    padding-top: 65px;
+    height: 100%;
+}
+
+.index_span {
+    display: block;
+}
+
+.hash_span {
+    word-break: break-all;
+}
+
+.data_table {
+    word-break: break-all;
+}
+
+.data_table th {
+    word-break: normal;
+}
