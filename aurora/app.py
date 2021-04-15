@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter
+from fastapi.staticfiles import StaticFiles
 
 from aurora.api import sample
 from aurora.api import minhash
@@ -17,6 +18,8 @@ api_v1.include_router(ssdeep.router)
 api_v1.include_router(string.router)
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="aurora/front/static"), name="static")
 
 app.include_router(api_v1, prefix="/api/v1")
 app.include_router(front.router, prefix="")
