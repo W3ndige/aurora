@@ -22,7 +22,7 @@ In order to set up Karton, please see the [Karton documentation](https://karton-
 head start into how Karton ecosystem works and how you can easily write new karton for different similarity tasks.
 
 
-### Normal installation
+### Manual installation
 
 Make sure that `libmagic` and `libfuzzy` libraries are installed.
 
@@ -31,6 +31,8 @@ For Ubuntu:
 ```
 apt-get install -y libmagic-dev libfuzzy-dev libfuzzy2
 ```
+
+For Arch Linux:
 
 ```
 pacman -S ssdeep
