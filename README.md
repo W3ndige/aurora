@@ -21,6 +21,9 @@ Remember, that aurora uses a number of services running under a hood.
 In order to set up Karton, please see the [Karton documentation](https://karton-core.readthedocs.io), which gives a great
 head start into how Karton ecosystem works and how you can easily write new karton for different similarity tasks.
 
+### Configuration
+
+Rename the `.env.template` file to `.env` and fill the blank values.
 
 ### Manual installation
 
