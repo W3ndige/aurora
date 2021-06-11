@@ -59,7 +59,7 @@
             {% if offset > 0 %}
               <a class="btn btn-secondary" href="/?offset={{offset - 50}}">Previous</a>
             {% endif %}
-            {% if samples | length == 50 %}
+            {% if samples_with_info | length == 50 %}
               <a class="btn btn-primary" href="/?offset={{offset + 50}}">Next</a>
             {% endif %}
         </div>
