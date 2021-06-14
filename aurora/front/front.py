@@ -201,31 +201,10 @@ def get_relations(request: Request, offset: int = 0, db=Depends(get_db)):
     )
 
 
-@router.get("/network", response_class=HTMLResponse)
-def network(
-    request: Request,
-    relation_type: Optional[str] = None,
-    confidence: Optional[str] = None,
-    db=Depends(get_db),
-):
-
-    filters = schemas.RelationFilter(relation_type=relation_type, confidence=confidence)
-
-    db_relations = queries.relation.get_simplified_relations(db, filters)
-
-    nodes, edges = net.prepare_large_graph(db_relations)
-
-    return templates.TemplateResponse(
-        "network.html",
-        {"request": request, "nodes": nodes, "edges": edges},
-    )
-
-
 @router.post("/search", response_class=HTMLResponse)
 def post_search(query: str = Form(...), db=Depends(get_db)):
     prefix, term = search.prepare_search(query)
 
-    # TODO(W3ndige): Think about single word prefixes
     if "." not in prefix:
         return None
 
