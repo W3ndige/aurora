@@ -8,15 +8,39 @@
         <div class="col-md">
             <div class="card">
                 <div class="card-header">Search</div>
-                <div class="card-body">
-                    <form class="form-inline" action="/search" accept-charset="UTF-8" method="post">
-                        <div class="input-group flex-fill">
-                          <input type="search" name="query" id="query" value="" placeholder="Query" class="form-control" aria-label="Query">
-                          <div class="input-group-append">
-                            <input type="submit" name="commit" value="Search" class="btn btn-primary" data-disable-with="Search">
-                          </div>
+                    <div class="card-body">
+                        <form class="form-inline" action="/search" accept-charset="UTF-8" method="post">
+                            <div class="input-group flex-fill">
+                              <input type="search" name="query" id="query" value="" placeholder="Query" class="form-control" aria-label="Query">
+                              <div class="input-group-append">
+                                  <input type="submit" name="commit" value="Search" class="btn btn-primary" data-disable-with="Search">
+                                  <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#searchHelp">?</button>
+                              </div>
+                            </div>
+                         </form>
+                        <div class="collapse"id="searchHelp">
+                            <div class="row mt-3">
+                                <div class="col-md">
+                                    <p> Search query allows for searching in a Lucerne like syntax:</p>
+                                    <ul>
+                                        <li>Sample
+                                            <ul>
+                                                <li>sample.md5: </li>
+                                                <li>sample.sh1: </li>
+                                                <li>sample.sha256: </li>
+                                                <li>sample.sha512: </li>
+                                            </ul>
+                                        </li>
+                                        <li>String
+                                            <ul>
+                                                <li>string.value: </li>
+                                                <li>string.sha256: </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                     </form>
                 </div>
             </div>
         </div>
