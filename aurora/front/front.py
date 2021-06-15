@@ -1,7 +1,7 @@
 import logging
 import starlette.status as status
 
-from typing import cast, Optional
+from typing import cast
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import APIRouter, Request, Depends, UploadFile, File, HTTPException, Form
 from starlette.templating import Jinja2Templates
@@ -10,7 +10,7 @@ from aurora.core import karton
 from aurora.core import search
 from aurora.core import network as net
 from aurora.core.utils import get_magic, get_sha256
-from aurora.database import get_db, queries, schemas, models
+from aurora.database import get_db, queries, models
 
 templates = Jinja2Templates(directory="aurora/front/templates/")
 
