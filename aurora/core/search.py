@@ -10,6 +10,7 @@ class SampleSearch(partial, Enum):
     SHA1 = partial(queries.sample.get_sample_by_sha1)
     SHA256 = partial(queries.sample.get_sample_by_sha256)
     SHA512 = partial(queries.sample.get_sample_by_sha512)
+    SSDEEP = partial(queries.sample.get_samples_by_ssdeep)
 
     def __call__(self, *args, **kwargs):
         return self.value(args[0], args[1])
@@ -25,25 +26,30 @@ class StringSearch(partial, Enum):
 
 def prepare_search(query: str) -> Tuple[str, str]:
     query = query.replace(" ", "")
-    prefix, term = query.split(":", 1)
-    prefix = prefix.lower()
+    try:
+        prefix, term = query.split(":", 1)
+        prefix = prefix.lower()
+    except ValueError:
+        prefix, term = (None, None)
 
     return prefix, term
 
 
 def sample_search(db, attribute: str, term: str) -> Optional[str]:
-    sample = None
+    samples = []
     term = term.lower()
     if attribute == "md5":
-        sample = SampleSearch.MD5(db, term)
+        samples.append(SampleSearch.MD5(db, term))
     elif attribute == "sha1":
-        sample = SampleSearch.SHA1(db, term)
+        samples.append(SampleSearch.SHA1(db, term))
     elif attribute == "sha256":
-        sample = SampleSearch.SHA256(db, term)
+        samples.append(SampleSearch.SHA256(db, term))
     elif attribute == "sha512":
-        sample = SampleSearch.SHA512(db, term)
+        samples.append(SampleSearch.SHA512(db, term))
+    elif attribute == "ssdeep":
+        samples = SampleSearch.SSDEEP(db, term)
 
-    return sample
+    return samples
 
 
 def string_search(db, attribute: str, term: str) -> Optional[str]:

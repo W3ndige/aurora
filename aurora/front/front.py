@@ -202,8 +202,10 @@ def get_relations(request: Request, offset: int = 0, db=Depends(get_db)):
 
 
 @router.post("/search", response_class=HTMLResponse)
-def post_search(query: str = Form(...), db=Depends(get_db)):
+def post_search(request: Request, query: str = Form(...), db=Depends(get_db)):
     prefix, term = search.prepare_search(query)
+    if not prefix or not term:
+        return None
 
     if "." not in prefix:
         return None
@@ -211,11 +213,9 @@ def post_search(query: str = Form(...), db=Depends(get_db)):
     model, attribute = prefix.split(".")
 
     if model == "sample":
-        sample = cast(models.Sample, search.sample_search(db, attribute, term))
-        if sample:
-            return RedirectResponse(
-                f"/sample/{sample.sha256}", status_code=status.HTTP_302_FOUND
-            )
+        samples = cast(models.Sample, search.sample_search(db, attribute, term))
+        if samples:
+            return templates.TemplateResponse("search.html", {"request": request, "samples": samples})
 
     elif model == "string":
         string = cast(models.String, search.string_search(db, attribute, term))

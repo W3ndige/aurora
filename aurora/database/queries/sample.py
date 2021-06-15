@@ -1,3 +1,5 @@
+import ssdeep
+
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from fastapi import UploadFile
@@ -207,6 +209,25 @@ def get_samples_with_string(db: Session, string: models.String) -> List[models.S
         .filter(models.Sample.strings.any(models.String.sha256 == string.sha256))
         .all()
     )
+
+
+def get_samples_by_ssdeep(db: Session, ssdeep_hash: str, cutoff_value: float = 0.7) -> List[models.Sample]:
+
+    chunksize = int(ssdeep_hash.split(":")[0])
+
+    candidate_samples = (
+        db.query(models.Sample)
+        .join(models.SsDeep)
+        .filter(models.SsDeep.chunksize == chunksize)
+        .all()
+    )
+
+    samples = []
+    for candidate in candidate_samples:
+        if ssdeep.compare(candidate.ssdeep.ssdeep, ssdeep_hash) > cutoff_value:
+            samples.append(candidate)
+
+    return samples
 
 
 def add_sample(db: Session, file: UploadFile) -> models.Sample:
