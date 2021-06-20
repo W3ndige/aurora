@@ -1,7 +1,7 @@
 import logging
 import starlette.status as status
 
-from typing import cast
+from typing import cast, List, Optional
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import APIRouter, Request, Depends, UploadFile, File, HTTPException, Form
 from starlette.templating import Jinja2Templates
@@ -10,7 +10,7 @@ from aurora.core import karton
 from aurora.core import search
 from aurora.core import network as net
 from aurora.core.utils import get_magic, get_sha256
-from aurora.database import get_db, queries, models
+from aurora.database import get_db, queries, models, schemas
 
 templates = Jinja2Templates(directory="aurora/front/templates/")
 
@@ -214,8 +214,16 @@ def post_search(request: Request, query: str = Form(...), db=Depends(get_db)):
 
     if model == "sample":
         samples = cast(models.Sample, search.sample_search(db, attribute, term))
-        if samples:
-            return templates.TemplateResponse("search.html", {"request": request, "samples": samples})
+        samples_with_info = []
+        for sample in samples:
+            samples_with_info.append(
+                {
+                    "sample": sample,
+                    "rel_size": len(queries.sample.get_sample_related(db, sample)),
+                }
+            )
+
+        return templates.TemplateResponse("index.html", {"request": request, "samples_with_info": samples_with_info, "offset": 0},)
 
     elif model == "string":
         string = cast(models.String, search.string_search(db, attribute, term))

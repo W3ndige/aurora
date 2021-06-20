@@ -37,7 +37,8 @@ def prepare_search(query: str) -> Tuple[str, str]:
 
 def sample_search(db, attribute: str, term: str) -> Optional[str]:
     samples = []
-    term = term.lower()
+    if attribute != "ssdeep":
+        term = term.lower()
     if attribute == "md5":
         samples.append(SampleSearch.MD5(db, term))
     elif attribute == "sha1":

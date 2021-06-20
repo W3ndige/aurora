@@ -4,9 +4,11 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from typing import List, Optional
-
+from logging import getLogger
 
 from aurora.database import models
+
+logger = getLogger(__name__)
 
 
 def get_samples(db: Session, offset: int = 0, limit: int = 50) -> List[models.Sample]:
@@ -211,7 +213,7 @@ def get_samples_with_string(db: Session, string: models.String) -> List[models.S
     )
 
 
-def get_samples_by_ssdeep(db: Session, ssdeep_hash: str, cutoff_value: float = 0.7) -> List[models.Sample]:
+def get_samples_by_ssdeep(db: Session, ssdeep_hash: str, cutoff_value: float = 0.5) -> List[models.Sample]:
 
     chunksize = int(ssdeep_hash.split(":")[0])
 
