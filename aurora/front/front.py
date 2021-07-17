@@ -207,27 +207,15 @@ def post_search(request: Request, query: str = Form(...), db=Depends(get_db)):
     if not prefix or not term:
         return None
 
-    if "." not in prefix:
-        return None
+    samples = cast(models.Sample, search.sample_search(db, prefix, term))
+    samples_with_info = []
+    for sample in samples:
+        samples_with_info.append(
+            {
+                "sample": sample,
+                "rel_size": len(queries.sample.get_sample_related(db, sample)),
+            }
+        )
 
-    model, attribute = prefix.split(".")
-
-    if model == "sample":
-        samples = cast(models.Sample, search.sample_search(db, attribute, term))
-        samples_with_info = []
-        for sample in samples:
-            samples_with_info.append(
-                {
-                    "sample": sample,
-                    "rel_size": len(queries.sample.get_sample_related(db, sample)),
-                }
-            )
-
-        return templates.TemplateResponse("index.html", {"request": request, "samples_with_info": samples_with_info, "offset": 0},)
-
-    elif model == "string":
-        string = cast(models.String, search.string_search(db, attribute, term))
-        if string:
-            return RedirectResponse(
-                f"/string/{string.sha256}", status_code=status.HTTP_302_FOUND
-            )
+    return templates.TemplateResponse("index.html",
+                                      {"request": request, "samples_with_info": samples_with_info, "offset": 0}, )
