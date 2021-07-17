@@ -40,7 +40,7 @@ def sample_search(db, prefix: str, term: str) -> Optional[str]:
     samples = []
 
     # SsDeep hashes are case sensitive
-    if prefix not in any(["string", "ssdeep"]):
+    if prefix not in ["string", "ssdeep"]:
         term = term.lower()
 
     if prefix == "md5":
