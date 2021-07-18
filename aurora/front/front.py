@@ -207,6 +207,12 @@ def post_search(request: Request, query: str = Form(...), db=Depends(get_db)):
     if not prefix or not term:
         return None
 
+    if prefix.startswith("string"):
+        prefix, attribute = prefix.split(".")
+        strings = cast(models.String, search.string_search(db, attribute, term))
+
+        return templates.TemplateResponse("string/strings.html", {"request": request, "strings": strings, "offset": 0})
+
     samples = cast(models.Sample, search.sample_search(db, prefix, term))
     samples_with_info = []
     for sample in samples:
@@ -218,4 +224,4 @@ def post_search(request: Request, query: str = Form(...), db=Depends(get_db)):
         )
 
     return templates.TemplateResponse("index.html",
-                                      {"request": request, "samples_with_info": samples_with_info, "offset": 0}, )
+                                      {"request": request, "samples_with_info": samples_with_info, "offset": 0})

@@ -1,8 +1,8 @@
 from enum import Enum
 from functools import partial
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
-from aurora.database import queries
+from aurora.database import queries, models
 
 
 class SampleSearch(partial, Enum):
@@ -59,12 +59,12 @@ def sample_search(db, prefix: str, term: str) -> Optional[str]:
     return samples
 
 
-def string_search(db, attribute: str, term: str) -> Optional[str]:
-    string = None
+def string_search(db, attribute: str, term: str) -> List[models.String]:
+    strings = []
     if attribute == "sha256":
         term = term.lower()
-        string = StringSearch.SHA256(db, term)
+        strings.append(StringSearch.SHA256(db, term))
     elif attribute == "value":
-        string = StringSearch.VALUE(db, term)
+        strings.append(StringSearch.VALUE(db, term))
 
-    return string
+    return strings
