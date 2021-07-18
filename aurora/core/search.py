@@ -36,24 +36,24 @@ def prepare_search(query: str) -> Tuple[str, str]:
     return prefix, term
 
 
-def sample_search(db, prefix: str, term: str) -> Optional[str]:
+def sample_search(db, attribute: str, term: str) -> Optional[str]:
     samples = []
 
     # SsDeep hashes are case sensitive
-    if prefix not in ["string", "ssdeep"]:
+    if attribute not in ["string", "ssdeep"]:
         term = term.lower()
 
-    if prefix == "md5":
+    if attribute == "md5":
         samples.append(SampleSearch.MD5(db, term))
-    elif prefix == "sha1":
+    elif attribute == "sha1":
         samples.append(SampleSearch.SHA1(db, term))
-    elif prefix == "sha256":
+    elif attribute == "sha256":
         samples.append(SampleSearch.SHA256(db, term))
-    elif prefix == "sha512":
+    elif attribute == "sha512":
         samples.append(SampleSearch.SHA512(db, term))
-    elif prefix == "ssdeep":
+    elif attribute == "ssdeep":
         samples = SampleSearch.SSDEEP(db, term)
-    elif prefix == "string":
+    elif attribute == "string":
         samples = SampleSearch.STRING(db, term)
 
     return samples
